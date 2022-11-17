@@ -1,0 +1,78 @@
+type Report @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  reportText: String
+  createdOn: AWSDateTime
+  updatedOn: AWSDateTime
+  postID: ID! @index(name: "byPost")
+  ReportBelongsToPost: Post @belongsTo
+}
+
+type Comment @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  commentText: String
+  createdOn: AWSDateTime
+  updatedOn: AWSDateTime
+  likes: [String]
+  userId: String
+  postID: ID! @index(name: "byPost")
+  CommentBelongsToPost: Post @belongsTo
+}
+
+enum PostType {
+  VIDEO
+  ARTICLE
+  REPOST
+}
+
+enum PostStatus {
+  CREATED
+  UPDATED
+  DELETED
+}
+
+type Post @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  desc: String
+  createdOn: AWSDateTime
+  updatedOn: AWSDateTime
+  postVideoUrl: String
+  postVoiceUrl: String
+  postThumbUrl: String
+  category: [String]
+  postStatus: PostStatus
+  likes: [String]
+  postType: PostType
+  tags: String
+  location: String
+  allowComments: Boolean
+  saves: [String]
+  userID: ID! @index(name: "byUser")
+  PostBelongToUser: User @belongsTo
+  Comments: [Comment] @hasMany(indexName: "byPost", fields: ["id"])
+  Reports: [Report] @hasMany(indexName: "byPost", fields: ["id"])
+}
+
+enum UserType {
+  USER
+  PUBLISHER
+}
+
+type User @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  username: String
+  phoneNumber: String
+  location: String
+  language: String
+  email: AWSEmail
+  profilePicUrl: String
+  createdOn: AWSDateTime
+  updatedOn: AWSDateTime
+  bio: String
+  subscribers: [String]
+  subscribed: [String]
+  saves: [String]
+  category: [String]
+  userType: UserType
+  userCogId: String
+  Posts: [Post] @hasMany(indexName: "byUser", fields: ["id"])
+}

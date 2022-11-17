@@ -1,0 +1,7 @@
+{
+    "AppSyncApiName": "citjo",
+    "DynamoDBBillingMode": "PAY_PER_REQUEST",
+    "DynamoDBEnableServerSideEncryption": false,
+    "S3DeploymentBucket": "amplify-citjo-dev-232119-deployment",
+    "S3DeploymentRootKey": "amplify-appsync-files/15a588fcfa3b4b321ab21f2e7b1ff54de1d885b7"
+}

@@ -1,0 +1,23 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-citjo-dev-232119-authRole",
+      "UnauthRoleArn": "arn:aws:iam::637762883748:role/amplify-citjo-dev-232119-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::637762883748:role/amplify-citjo-dev-232119-authRole",
+      "Region": "ap-south-1",
+      "DeploymentBucketName": "amplify-citjo-dev-232119-deployment",
+      "UnauthRoleName": "amplify-citjo-dev-232119-unauthRole",
+      "StackName": "amplify-citjo-dev-232119",
+      "StackId": "arn:aws:cloudformation:ap-south-1:637762883748:stack/amplify-citjo-dev-232119/f4afe8f0-5f8d-11ed-b9a4-029e46d1421c",
+      "AmplifyAppId": "d3o6loh7u37tgu"
+    },
+    "categories": {
+      "auth": {
+        "citjoauth": {}
+      },
+      "storage": {
+        "citjo": {}
+      }
+    }
+  }
+}

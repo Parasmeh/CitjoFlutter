@@ -1,0 +1,6 @@
+version: "Apple Swift version 5.7.1 (swiftlang-5.7.1.135.3 clang-1400.0.29.51)"
+options: "b3d0505cba35e7a5856c7a714ba47fa1fffd85aaf742a2e922aa8884a7fc2340"
+build_start_time: [1668708808, 171280860]
+build_end_time: [1668708814, 387094974]
+inputs:
+  "/Users/prerak/.pub-cache/hosted/pub.dev/shared_preferences_macos-2.0.4/macos/Classes/SharedPreferencesPlugin.swift": [1668443157, 639240264]

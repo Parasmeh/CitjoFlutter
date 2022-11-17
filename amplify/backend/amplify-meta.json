@@ -1,0 +1,108 @@
+{
+  "providers": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-citjo-dev-232119-authRole",
+      "UnauthRoleArn": "arn:aws:iam::637762883748:role/amplify-citjo-dev-232119-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::637762883748:role/amplify-citjo-dev-232119-authRole",
+      "Region": "ap-south-1",
+      "DeploymentBucketName": "amplify-citjo-dev-232119-deployment",
+      "UnauthRoleName": "amplify-citjo-dev-232119-unauthRole",
+      "StackName": "amplify-citjo-dev-232119",
+      "StackId": "arn:aws:cloudformation:ap-south-1:637762883748:stack/amplify-citjo-dev-232119/f4afe8f0-5f8d-11ed-b9a4-029e46d1421c",
+      "AmplifyAppId": "d3o6loh7u37tgu"
+    }
+  },
+  "auth": {
+    "citjoauth": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false,
+      "frontendAuthConfig": {
+        "socialProviders": [
+          "GOOGLE"
+        ],
+        "usernameAttributes": [
+          "EMAIL"
+        ],
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyMinLength": 8,
+          "passwordPolicyCharacters": []
+        },
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
+      "output": {
+        "UserPoolId": "ap-south-1_x9LKUOsoA",
+        "AppClientIDWeb": "dod3hefdm01ec2r5quuham7ou",
+        "AppClientID": "a085qjt7kpv5p6sdndpm21jk6",
+        "HostedUIDomain": "citjo-auth-dev",
+        "IdentityPoolId": "ap-south-1:aef6a64a-e0f7-4f16-a7bf-9b46be1d24f2",
+        "UserPoolArn": "arn:aws:cognito-idp:ap-south-1:637762883748:userpool/ap-south-1_x9LKUOsoA",
+        "IdentityPoolName": "citjo_identity_pool__dev",
+        "OAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"myapp://\"],\"LogoutURLs\":[\"myapp://\"]}",
+        "UserPoolName": "citjo_user_pool"
+      },
+      "lastPushTimeStamp": "2022-11-17T17:32:10.253Z",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-citjo-dev-232119-deployment/amplify-cfn-templates/auth/citjoauth-cloudformation-template.json",
+        "logicalId": "authcitjoauth"
+      }
+    }
+  },
+  "storage": {
+    "citjo": {
+      "service": "S3",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "output": {
+        "BucketName": "citjos3232119-dev",
+        "Region": "ap-south-1"
+      },
+      "lastPushTimeStamp": "2022-11-17T17:32:10.504Z",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-citjo-dev-232119-deployment/amplify-cfn-templates/storage/cloudformation-template.json",
+        "logicalId": "storagecitjo"
+      }
+    }
+  },
+  "api": {
+    "citjo": {
+      "service": "AppSync",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "output": {
+        "authConfig": {
+          "defaultAuthentication": {
+            "authenticationType": "API_KEY",
+            "apiKeyConfig": {
+              "apiKeyExpirationDays": 30,
+              "description": "api key description"
+            }
+          },
+          "additionalAuthenticationProviders": [
+            {
+              "authenticationType": "AWS_IAM"
+            }
+          ]
+        },
+        "GraphQLAPIIdOutput": "soluvvatljeq3crdswhnieywka",
+        "GraphQLAPIEndpointOutput": "https://3defmtreujccxpt46zavqo73dm.appsync-api.ap-south-1.amazonaws.com/graphql",
+        "GraphQLAPIKeyOutput": "da2-wwy7be6yprhvfpqlwoiqxjicum"
+      },
+      "lastPushTimeStamp": "2022-11-17T17:32:10.254Z",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-citjo-dev-232119-deployment/amplify-cfn-templates/api/cloudformation-template.json",
+        "logicalId": "apicitjo"
+      }
+    }
+  }
+}

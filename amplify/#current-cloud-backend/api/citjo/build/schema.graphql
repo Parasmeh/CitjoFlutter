@@ -1,0 +1,670 @@
+
+type Report @aws_iam @aws_api_key {
+  id: ID!
+  reportText: String
+  createdOn: AWSDateTime
+  updatedOn: AWSDateTime
+  postID: ID!
+  ReportBelongsToPost: Post
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  _version: Int!
+  _deleted: Boolean
+  _lastChangedAt: AWSTimestamp!
+}
+
+type Comment @aws_iam @aws_api_key {
+  id: ID!
+  commentText: String
+  createdOn: AWSDateTime
+  updatedOn: AWSDateTime
+  likes: [String]
+  userId: String
+  postID: ID!
+  CommentBelongsToPost: Post
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  _version: Int!
+  _deleted: Boolean
+  _lastChangedAt: AWSTimestamp!
+}
+
+enum PostType {
+  VIDEO
+  ARTICLE
+  REPOST
+}
+
+enum PostStatus {
+  CREATED
+  UPDATED
+  DELETED
+}
+
+type Post @aws_iam @aws_api_key {
+  id: ID!
+  desc: String
+  createdOn: AWSDateTime
+  updatedOn: AWSDateTime
+  postVideoUrl: String
+  postVoiceUrl: String
+  postThumbUrl: String
+  category: [String]
+  postStatus: PostStatus
+  likes: [String]
+  postType: PostType
+  tags: String
+  location: String
+  allowComments: Boolean
+  saves: [String]
+  userID: ID!
+  PostBelongToUser: User
+  Comments(filter: ModelCommentFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelCommentConnection
+  Reports(filter: ModelReportFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelReportConnection
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  _version: Int!
+  _deleted: Boolean
+  _lastChangedAt: AWSTimestamp!
+}
+
+enum UserType {
+  USER
+  PUBLISHER
+}
+
+type User @aws_iam @aws_api_key {
+  id: ID!
+  username: String
+  phoneNumber: String
+  location: String
+  language: String
+  email: AWSEmail
+  profilePicUrl: String
+  createdOn: AWSDateTime
+  updatedOn: AWSDateTime
+  bio: String
+  subscribers: [String]
+  subscribed: [String]
+  saves: [String]
+  category: [String]
+  userType: UserType
+  userCogId: String
+  Posts(filter: ModelPostFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelPostConnection
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  _version: Int!
+  _deleted: Boolean
+  _lastChangedAt: AWSTimestamp!
+}
+
+input ModelStringInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  contains: String
+  notContains: String
+  between: [String]
+  beginsWith: String
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+input ModelIntInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelFloatInput {
+  ne: Float
+  eq: Float
+  le: Float
+  lt: Float
+  ge: Float
+  gt: Float
+  between: [Float]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelBooleanInput {
+  ne: Boolean
+  eq: Boolean
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelIDInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  contains: ID
+  notContains: ID
+  between: [ID]
+  beginsWith: ID
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+input ModelSubscriptionStringInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  contains: String
+  notContains: String
+  between: [String]
+  beginsWith: String
+  in: [String]
+  notIn: [String]
+}
+
+input ModelSubscriptionIntInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+  in: [Int]
+  notIn: [Int]
+}
+
+input ModelSubscriptionFloatInput {
+  ne: Float
+  eq: Float
+  le: Float
+  lt: Float
+  ge: Float
+  gt: Float
+  between: [Float]
+  in: [Float]
+  notIn: [Float]
+}
+
+input ModelSubscriptionBooleanInput {
+  ne: Boolean
+  eq: Boolean
+}
+
+input ModelSubscriptionIDInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  contains: ID
+  notContains: ID
+  between: [ID]
+  beginsWith: ID
+  in: [ID]
+  notIn: [ID]
+}
+
+enum ModelAttributeTypes {
+  binary
+  binarySet
+  bool
+  list
+  map
+  number
+  numberSet
+  string
+  stringSet
+  _null
+}
+
+input ModelSizeInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+}
+
+enum ModelSortDirection {
+  ASC
+  DESC
+}
+
+type ModelReportConnection @aws_api_key @aws_iam {
+  items: [Report]!
+  nextToken: String
+  startedAt: AWSTimestamp
+}
+
+input ModelReportFilterInput {
+  id: ModelIDInput
+  reportText: ModelStringInput
+  createdOn: ModelStringInput
+  updatedOn: ModelStringInput
+  postID: ModelIDInput
+  and: [ModelReportFilterInput]
+  or: [ModelReportFilterInput]
+  not: ModelReportFilterInput
+}
+
+type Query {
+  getReport(id: ID!): Report @aws_api_key @aws_iam
+  listReports(filter: ModelReportFilterInput, limit: Int, nextToken: String): ModelReportConnection @aws_api_key @aws_iam
+  syncReports(filter: ModelReportFilterInput, limit: Int, nextToken: String, lastSync: AWSTimestamp): ModelReportConnection @aws_api_key @aws_iam
+  getComment(id: ID!): Comment @aws_api_key @aws_iam
+  listComments(filter: ModelCommentFilterInput, limit: Int, nextToken: String): ModelCommentConnection @aws_api_key @aws_iam
+  syncComments(filter: ModelCommentFilterInput, limit: Int, nextToken: String, lastSync: AWSTimestamp): ModelCommentConnection @aws_api_key @aws_iam
+  getPost(id: ID!): Post @aws_api_key @aws_iam
+  listPosts(filter: ModelPostFilterInput, limit: Int, nextToken: String): ModelPostConnection @aws_api_key @aws_iam
+  syncPosts(filter: ModelPostFilterInput, limit: Int, nextToken: String, lastSync: AWSTimestamp): ModelPostConnection @aws_api_key @aws_iam
+  getUser(id: ID!): User @aws_api_key @aws_iam
+  listUsers(filter: ModelUserFilterInput, limit: Int, nextToken: String): ModelUserConnection @aws_api_key @aws_iam
+  syncUsers(filter: ModelUserFilterInput, limit: Int, nextToken: String, lastSync: AWSTimestamp): ModelUserConnection @aws_api_key @aws_iam
+}
+
+input ModelReportConditionInput {
+  reportText: ModelStringInput
+  createdOn: ModelStringInput
+  updatedOn: ModelStringInput
+  postID: ModelIDInput
+  and: [ModelReportConditionInput]
+  or: [ModelReportConditionInput]
+  not: ModelReportConditionInput
+}
+
+input CreateReportInput {
+  id: ID
+  reportText: String
+  createdOn: AWSDateTime
+  updatedOn: AWSDateTime
+  postID: ID!
+  _version: Int
+}
+
+input UpdateReportInput {
+  id: ID!
+  reportText: String
+  createdOn: AWSDateTime
+  updatedOn: AWSDateTime
+  postID: ID
+  _version: Int
+}
+
+input DeleteReportInput {
+  id: ID!
+  _version: Int
+}
+
+type Mutation {
+  createReport(input: CreateReportInput!, condition: ModelReportConditionInput): Report @aws_api_key @aws_iam
+  updateReport(input: UpdateReportInput!, condition: ModelReportConditionInput): Report @aws_api_key @aws_iam
+  deleteReport(input: DeleteReportInput!, condition: ModelReportConditionInput): Report @aws_api_key @aws_iam
+  createComment(input: CreateCommentInput!, condition: ModelCommentConditionInput): Comment @aws_api_key @aws_iam
+  updateComment(input: UpdateCommentInput!, condition: ModelCommentConditionInput): Comment @aws_api_key @aws_iam
+  deleteComment(input: DeleteCommentInput!, condition: ModelCommentConditionInput): Comment @aws_api_key @aws_iam
+  createPost(input: CreatePostInput!, condition: ModelPostConditionInput): Post @aws_api_key @aws_iam
+  updatePost(input: UpdatePostInput!, condition: ModelPostConditionInput): Post @aws_api_key @aws_iam
+  deletePost(input: DeletePostInput!, condition: ModelPostConditionInput): Post @aws_api_key @aws_iam
+  createUser(input: CreateUserInput!, condition: ModelUserConditionInput): User @aws_api_key @aws_iam
+  updateUser(input: UpdateUserInput!, condition: ModelUserConditionInput): User @aws_api_key @aws_iam
+  deleteUser(input: DeleteUserInput!, condition: ModelUserConditionInput): User @aws_api_key @aws_iam
+}
+
+input ModelSubscriptionReportFilterInput {
+  id: ModelSubscriptionIDInput
+  reportText: ModelSubscriptionStringInput
+  createdOn: ModelSubscriptionStringInput
+  updatedOn: ModelSubscriptionStringInput
+  postID: ModelSubscriptionIDInput
+  and: [ModelSubscriptionReportFilterInput]
+  or: [ModelSubscriptionReportFilterInput]
+}
+
+type Subscription {
+  onCreateReport(filter: ModelSubscriptionReportFilterInput): Report @aws_subscribe(mutations: ["createReport"]) @aws_api_key @aws_iam
+  onUpdateReport(filter: ModelSubscriptionReportFilterInput): Report @aws_subscribe(mutations: ["updateReport"]) @aws_api_key @aws_iam
+  onDeleteReport(filter: ModelSubscriptionReportFilterInput): Report @aws_subscribe(mutations: ["deleteReport"]) @aws_api_key @aws_iam
+  onCreateComment(filter: ModelSubscriptionCommentFilterInput): Comment @aws_subscribe(mutations: ["createComment"]) @aws_api_key @aws_iam
+  onUpdateComment(filter: ModelSubscriptionCommentFilterInput): Comment @aws_subscribe(mutations: ["updateComment"]) @aws_api_key @aws_iam
+  onDeleteComment(filter: ModelSubscriptionCommentFilterInput): Comment @aws_subscribe(mutations: ["deleteComment"]) @aws_api_key @aws_iam
+  onCreatePost(filter: ModelSubscriptionPostFilterInput): Post @aws_subscribe(mutations: ["createPost"]) @aws_api_key @aws_iam
+  onUpdatePost(filter: ModelSubscriptionPostFilterInput): Post @aws_subscribe(mutations: ["updatePost"]) @aws_api_key @aws_iam
+  onDeletePost(filter: ModelSubscriptionPostFilterInput): Post @aws_subscribe(mutations: ["deletePost"]) @aws_api_key @aws_iam
+  onCreateUser(filter: ModelSubscriptionUserFilterInput): User @aws_subscribe(mutations: ["createUser"]) @aws_api_key @aws_iam
+  onUpdateUser(filter: ModelSubscriptionUserFilterInput): User @aws_subscribe(mutations: ["updateUser"]) @aws_api_key @aws_iam
+  onDeleteUser(filter: ModelSubscriptionUserFilterInput): User @aws_subscribe(mutations: ["deleteUser"]) @aws_api_key @aws_iam
+}
+
+type ModelCommentConnection @aws_api_key @aws_iam {
+  items: [Comment]!
+  nextToken: String
+  startedAt: AWSTimestamp
+}
+
+input ModelCommentFilterInput {
+  id: ModelIDInput
+  commentText: ModelStringInput
+  createdOn: ModelStringInput
+  updatedOn: ModelStringInput
+  likes: ModelStringInput
+  userId: ModelStringInput
+  postID: ModelIDInput
+  and: [ModelCommentFilterInput]
+  or: [ModelCommentFilterInput]
+  not: ModelCommentFilterInput
+}
+
+input ModelCommentConditionInput {
+  commentText: ModelStringInput
+  createdOn: ModelStringInput
+  updatedOn: ModelStringInput
+  likes: ModelStringInput
+  userId: ModelStringInput
+  postID: ModelIDInput
+  and: [ModelCommentConditionInput]
+  or: [ModelCommentConditionInput]
+  not: ModelCommentConditionInput
+}
+
+input CreateCommentInput {
+  id: ID
+  commentText: String
+  createdOn: AWSDateTime
+  updatedOn: AWSDateTime
+  likes: [String]
+  userId: String
+  postID: ID!
+  _version: Int
+}
+
+input UpdateCommentInput {
+  id: ID!
+  commentText: String
+  createdOn: AWSDateTime
+  updatedOn: AWSDateTime
+  likes: [String]
+  userId: String
+  postID: ID
+  _version: Int
+}
+
+input DeleteCommentInput {
+  id: ID!
+  _version: Int
+}
+
+input ModelSubscriptionCommentFilterInput {
+  id: ModelSubscriptionIDInput
+  commentText: ModelSubscriptionStringInput
+  createdOn: ModelSubscriptionStringInput
+  updatedOn: ModelSubscriptionStringInput
+  likes: ModelSubscriptionStringInput
+  userId: ModelSubscriptionStringInput
+  postID: ModelSubscriptionIDInput
+  and: [ModelSubscriptionCommentFilterInput]
+  or: [ModelSubscriptionCommentFilterInput]
+}
+
+type ModelPostConnection @aws_api_key @aws_iam {
+  items: [Post]!
+  nextToken: String
+  startedAt: AWSTimestamp
+}
+
+input ModelPostStatusInput {
+  eq: PostStatus
+  ne: PostStatus
+}
+
+input ModelPostTypeInput {
+  eq: PostType
+  ne: PostType
+}
+
+input ModelPostFilterInput {
+  id: ModelIDInput
+  desc: ModelStringInput
+  createdOn: ModelStringInput
+  updatedOn: ModelStringInput
+  postVideoUrl: ModelStringInput
+  postVoiceUrl: ModelStringInput
+  postThumbUrl: ModelStringInput
+  category: ModelStringInput
+  postStatus: ModelPostStatusInput
+  likes: ModelStringInput
+  postType: ModelPostTypeInput
+  tags: ModelStringInput
+  location: ModelStringInput
+  allowComments: ModelBooleanInput
+  saves: ModelStringInput
+  userID: ModelIDInput
+  and: [ModelPostFilterInput]
+  or: [ModelPostFilterInput]
+  not: ModelPostFilterInput
+}
+
+input ModelPostConditionInput {
+  desc: ModelStringInput
+  createdOn: ModelStringInput
+  updatedOn: ModelStringInput
+  postVideoUrl: ModelStringInput
+  postVoiceUrl: ModelStringInput
+  postThumbUrl: ModelStringInput
+  category: ModelStringInput
+  postStatus: ModelPostStatusInput
+  likes: ModelStringInput
+  postType: ModelPostTypeInput
+  tags: ModelStringInput
+  location: ModelStringInput
+  allowComments: ModelBooleanInput
+  saves: ModelStringInput
+  userID: ModelIDInput
+  and: [ModelPostConditionInput]
+  or: [ModelPostConditionInput]
+  not: ModelPostConditionInput
+}
+
+input CreatePostInput {
+  id: ID
+  desc: String
+  createdOn: AWSDateTime
+  updatedOn: AWSDateTime
+  postVideoUrl: String
+  postVoiceUrl: String
+  postThumbUrl: String
+  category: [String]
+  postStatus: PostStatus
+  likes: [String]
+  postType: PostType
+  tags: String
+  location: String
+  allowComments: Boolean
+  saves: [String]
+  userID: ID!
+  _version: Int
+}
+
+input UpdatePostInput {
+  id: ID!
+  desc: String
+  createdOn: AWSDateTime
+  updatedOn: AWSDateTime
+  postVideoUrl: String
+  postVoiceUrl: String
+  postThumbUrl: String
+  category: [String]
+  postStatus: PostStatus
+  likes: [String]
+  postType: PostType
+  tags: String
+  location: String
+  allowComments: Boolean
+  saves: [String]
+  userID: ID
+  _version: Int
+}
+
+input DeletePostInput {
+  id: ID!
+  _version: Int
+}
+
+input ModelSubscriptionPostFilterInput {
+  id: ModelSubscriptionIDInput
+  desc: ModelSubscriptionStringInput
+  createdOn: ModelSubscriptionStringInput
+  updatedOn: ModelSubscriptionStringInput
+  postVideoUrl: ModelSubscriptionStringInput
+  postVoiceUrl: ModelSubscriptionStringInput
+  postThumbUrl: ModelSubscriptionStringInput
+  category: ModelSubscriptionStringInput
+  postStatus: ModelSubscriptionStringInput
+  likes: ModelSubscriptionStringInput
+  postType: ModelSubscriptionStringInput
+  tags: ModelSubscriptionStringInput
+  location: ModelSubscriptionStringInput
+  allowComments: ModelSubscriptionBooleanInput
+  saves: ModelSubscriptionStringInput
+  userID: ModelSubscriptionIDInput
+  and: [ModelSubscriptionPostFilterInput]
+  or: [ModelSubscriptionPostFilterInput]
+}
+
+type ModelUserConnection @aws_api_key @aws_iam {
+  items: [User]!
+  nextToken: String
+  startedAt: AWSTimestamp
+}
+
+input ModelUserTypeInput {
+  eq: UserType
+  ne: UserType
+}
+
+input ModelUserFilterInput {
+  id: ModelIDInput
+  username: ModelStringInput
+  phoneNumber: ModelStringInput
+  location: ModelStringInput
+  language: ModelStringInput
+  email: ModelStringInput
+  profilePicUrl: ModelStringInput
+  createdOn: ModelStringInput
+  updatedOn: ModelStringInput
+  bio: ModelStringInput
+  subscribers: ModelStringInput
+  subscribed: ModelStringInput
+  saves: ModelStringInput
+  category: ModelStringInput
+  userType: ModelUserTypeInput
+  userCogId: ModelStringInput
+  and: [ModelUserFilterInput]
+  or: [ModelUserFilterInput]
+  not: ModelUserFilterInput
+}
+
+input ModelUserConditionInput {
+  username: ModelStringInput
+  phoneNumber: ModelStringInput
+  location: ModelStringInput
+  language: ModelStringInput
+  email: ModelStringInput
+  profilePicUrl: ModelStringInput
+  createdOn: ModelStringInput
+  updatedOn: ModelStringInput
+  bio: ModelStringInput
+  subscribers: ModelStringInput
+  subscribed: ModelStringInput
+  saves: ModelStringInput
+  category: ModelStringInput
+  userType: ModelUserTypeInput
+  userCogId: ModelStringInput
+  and: [ModelUserConditionInput]
+  or: [ModelUserConditionInput]
+  not: ModelUserConditionInput
+}
+
+input CreateUserInput {
+  id: ID
+  username: String
+  phoneNumber: String
+  location: String
+  language: String
+  email: AWSEmail
+  profilePicUrl: String
+  createdOn: AWSDateTime
+  updatedOn: AWSDateTime
+  bio: String
+  subscribers: [String]
+  subscribed: [String]
+  saves: [String]
+  category: [String]
+  userType: UserType
+  userCogId: String
+  _version: Int
+}
+
+input UpdateUserInput {
+  id: ID!
+  username: String
+  phoneNumber: String
+  location: String
+  language: String
+  email: AWSEmail
+  profilePicUrl: String
+  createdOn: AWSDateTime
+  updatedOn: AWSDateTime
+  bio: String
+  subscribers: [String]
+  subscribed: [String]
+  saves: [String]
+  category: [String]
+  userType: UserType
+  userCogId: String
+  _version: Int
+}
+
+input DeleteUserInput {
+  id: ID!
+  _version: Int
+}
+
+input ModelSubscriptionUserFilterInput {
+  id: ModelSubscriptionIDInput
+  username: ModelSubscriptionStringInput
+  phoneNumber: ModelSubscriptionStringInput
+  location: ModelSubscriptionStringInput
+  language: ModelSubscriptionStringInput
+  email: ModelSubscriptionStringInput
+  profilePicUrl: ModelSubscriptionStringInput
+  createdOn: ModelSubscriptionStringInput
+  updatedOn: ModelSubscriptionStringInput
+  bio: ModelSubscriptionStringInput
+  subscribers: ModelSubscriptionStringInput
+  subscribed: ModelSubscriptionStringInput
+  saves: ModelSubscriptionStringInput
+  category: ModelSubscriptionStringInput
+  userType: ModelSubscriptionStringInput
+  userCogId: ModelSubscriptionStringInput
+  and: [ModelSubscriptionUserFilterInput]
+  or: [ModelSubscriptionUserFilterInput]
+}
+
