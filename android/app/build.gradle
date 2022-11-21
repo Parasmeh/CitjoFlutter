@@ -32,8 +32,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    compileSdk 33
-
+    compileSdkVersion 33
 //    compileSdkVersion flutter.compileSdkVersion
 
     compileOptions {
@@ -52,8 +51,8 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.citjo.citjo"
-        minSdk 31
-        targetSdk 33
+        minSdkVersion 28
+        targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
@@ -90,5 +89,4 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-
 }

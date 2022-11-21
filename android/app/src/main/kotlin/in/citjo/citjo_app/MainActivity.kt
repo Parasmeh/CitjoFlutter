@@ -1,4 +1,4 @@
-package `in`.citjo.citjo_app
+package com.citjo.citjo_app
 
 import io.flutter.embedding.android.FlutterActivity
 
