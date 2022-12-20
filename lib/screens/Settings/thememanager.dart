@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../Theme/app_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../../Theme/app_colors.dart';
 import '../../Theme/typography.dart';
 import '../../stores/storemanager.dart';
 
@@ -11,7 +12,7 @@ class ThemeNotifier with ChangeNotifier {
       iconTheme: IconThemeData(color: AppColors.white),
       systemOverlayStyle: SystemUiOverlayStyle(
         systemStatusBarContrastEnforced: true,
-        statusBarColor: AppColors.primary,
+        statusBarColor: AppColors.white,
         statusBarIconBrightness: Brightness.dark, // For Android (dark icons)
         statusBarBrightness: Brightness.dark, // For iOS (dark icons)
       ),
@@ -54,7 +55,7 @@ class ThemeNotifier with ChangeNotifier {
       iconTheme: IconThemeData(color: AppColors.black),
       systemOverlayStyle: SystemUiOverlayStyle(
         // systemStatusBarContrastEnforced: true,
-        statusBarColor: AppColors.primary,
+        statusBarColor: AppColors.white,
         statusBarIconBrightness: Brightness.dark, // For Android (dark icons)
         statusBarBrightness: Brightness.dark, // For iOS (dark icons)
       ),

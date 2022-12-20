@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
 
 import '../Theme/app_colors.dart';
 import '../models/User.dart';
@@ -22,6 +23,14 @@ class VideoPost extends StatelessWidget {
     required this.likes,
     required this.postUser,
   }) : super(key: key);
+
+  VideoPlayerController? controller;
+
+  Future<Null> loadController() async {
+    controller = VideoPlayerController.network(videoUrl);
+    await controller?.initialize();
+    controller?.setLooping(true);
+  }
 
   @override
   Widget build(BuildContext context) {

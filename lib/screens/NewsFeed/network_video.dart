@@ -1,7 +1,6 @@
+import 'package:Citjo/widgets/video_player_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
-
-import '../../widgets/video_player_widget.dart';
 
 class NetworkPlayerController extends StatefulWidget {
   final String videoUrl;
@@ -37,6 +36,18 @@ class _NetworkPlayerControllerState extends State<NetworkPlayerController> {
 
   @override
   Widget build(BuildContext context) {
-    return VideoPlayerWidget(controller: controller);
+    return Center(
+      child: Container(
+        color: Colors.black,
+        child: AspectRatio(
+          aspectRatio: controller.value.aspectRatio,
+          child: VideoPlayerWidget(
+            controller: controller,
+          ),
+        ),
+      ),
+    );
+
+    // return VideoPlayerWidget(controller: controller);
   }
 }

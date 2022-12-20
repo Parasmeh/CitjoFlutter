@@ -1,25 +1,21 @@
-import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-import '../../widgets/comment_section.dart';
 import './multi_manager/flick_multi_manager.dart';
 import '../../Theme/app_colors.dart';
 import '../../models/Post.dart';
 import '../../models/User.dart';
 import '../../repositories/query_repository.dart';
 import '../../stores/userStore.dart';
+import '../../widgets/comment_section.dart';
 import 'multi_manager/flick_multi_player.dart';
 
-
 class SubscribedNews extends StatefulWidget {
-  const SubscribedNews({
-    Key? key,
-  }) : super(key: key);
+  const SubscribedNews({Key? key}) : super(key: key);
 
   @override
   State<SubscribedNews> createState() => _SubscribedNewsState();
@@ -30,12 +26,17 @@ class _SubscribedNewsState extends State<SubscribedNews> {
   final QueryRepository _queryRepo = QueryRepository();
 
   late VideoPlayerController _videoPlayerController;
-  late ChewieController _chewieController;
 
   @override
   void initState() {
     super.initState();
     flickMultiManager = FlickMultiManager();
+  }
+
+  @override
+  void dispose() {
+    _videoPlayerController.dispose();
+    super.dispose();
   }
 
   @override
@@ -68,6 +69,10 @@ class _SubscribedNewsState extends State<SubscribedNews> {
                   User postUser = Provider.of<UserStore>(context, listen: false)
                       .postUsers[posts[index].userID]!;
 
+                  //videoplayer controller
+                  _videoPlayerController =
+                      VideoPlayerController.network(thisPost.postVideoUrl!);
+
                   return Container(
                     padding:
                         const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -76,21 +81,12 @@ class _SubscribedNewsState extends State<SubscribedNews> {
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(5),
-                          // child: FlickMultiPlayer(
-                          //   thisPost: thisPost,
-                          //   url: thisPost.postVideoUrl!,
-                          //   flickMultiManager: flickMultiManager,
-                          //   image: thisPost.postThumbUrl!,
-                          //   postUser: postUser,
-                          // ),
-                          child : _videoPlayerController.value.isInitialized
-                            ? AspectRatio(aspectRatio: _videoPlayerController.value.aspectRatio,
-                            child: Chewie(
-                              controller: _chewieController,
-                            ),
-                          )
-                              :Center(
-                            child: CircularProgressIndicator(),
+                          child: FlickMultiPlayer(
+                            thisPost: thisPost,
+                            url: thisPost.postVideoUrl!,
+                            flickMultiManager: flickMultiManager,
+                            image: thisPost.postThumbUrl!,
+                            postUser: postUser,
                           ),
                         ),
                         Row(
@@ -142,8 +138,9 @@ class _SubscribedNewsState extends State<SubscribedNews> {
                                               size: 24,
                                             ),
                                             onTap: () async {
-                                              await Provider.of<UserStore>(context,
-                                                  listen: false)
+                                              await Provider.of<UserStore>(
+                                                      context,
+                                                      listen: false)
                                                   .changeLiked(thisPost.id);
                                             },
                                           ),
@@ -158,7 +155,6 @@ class _SubscribedNewsState extends State<SubscribedNews> {
                                           ),
                                         ],
                                       ),
-
                                     ],
                                   );
                                 }),

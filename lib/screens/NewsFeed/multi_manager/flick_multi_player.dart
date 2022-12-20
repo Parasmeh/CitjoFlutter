@@ -4,13 +4,13 @@ import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
+import './flick_multi_manager.dart';
+import '../../../Theme/app_colors.dart';
 import '../../../models/Post.dart';
+import '../../../models/User.dart';
 import '../../../routes/routes_path.dart';
 import '../../../services/get_it_service.dart';
 import '../../../services/navigation_service.dart';
-import './flick_multi_manager.dart';
-import '../../../Theme/app_colors.dart';
-import '../../../models/User.dart';
 import '../../../stores/userStore.dart';
 import '../../../widgets/feed.dart';
 import '../../../widgets/profile_pic.dart';
@@ -38,15 +38,17 @@ class FlickMultiPlayer extends StatefulWidget {
 
 class _FlickMultiPlayerState extends State<FlickMultiPlayer> {
   late FlickManager flickManager;
+  late VideoPlayerController _videoPlayerController;
 
   final NavigationService _navigationService =
       get_it_instance_const<NavigationService>();
 
   @override
   void initState() {
+    _videoPlayerController = VideoPlayerController.network(widget.url);
+
     flickManager = FlickManager(
-      videoPlayerController: VideoPlayerController.network(widget.url)
-        ..setLooping(true),
+      videoPlayerController: _videoPlayerController..setLooping(true),
       autoPlay: false,
     );
     widget.flickMultiManager.init(flickManager);
@@ -75,6 +77,7 @@ class _FlickMultiPlayerState extends State<FlickMultiPlayer> {
           FlickVideoPlayer(
             flickManager: flickManager,
             flickVideoWithControls: FlickVideoWithControls(
+              videoFit: BoxFit.fitHeight,
               playerLoadingFallback: Positioned.fill(
                 child: Stack(
                   children: <Widget>[

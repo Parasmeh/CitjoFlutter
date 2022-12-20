@@ -134,6 +134,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.1"
+  better_player:
+    dependency: "direct main"
+    description:
+      name: better_player
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.83"
   boolean_selector:
     dependency: transitive
     description:
@@ -331,6 +338,20 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_widget_from_html_core:
+    dependency: transitive
+    description:
+      name: flutter_widget_from_html_core
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.8.5+3"
+  fwfh_text_style:
+    dependency: transitive
+    description:
+      name: fwfh_text_style
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.22.08+1"
   get_it:
     dependency: "direct main"
     description:

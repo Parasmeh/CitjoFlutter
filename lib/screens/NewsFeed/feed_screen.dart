@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -97,7 +96,7 @@ class _FeedScreenState extends State<FeedScreen> {
                 });
               },
               children: [
-                const SubscribedNews(),
+                SubscribedNews(),
                 // SubscribedFullScreen(),
                 LocalNews(),
                 GlobalNews(),
