@@ -1,8 +1,10 @@
+import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:video_player/video_player.dart';
 
 import '../Theme/app_colors.dart';
 import '../models/ModelProvider.dart';
@@ -15,14 +17,9 @@ import '../services/get_it_service.dart';
 import '../services/navigation_service.dart';
 import '../stores/userStore.dart';
 import 'comment_section.dart';
-import 'package:chewie/chewie.dart';
-import 'package:video_player/video_player.dart';
-
 import 'report_section.dart';
 
-
 class Feed extends StatefulWidget {
-
   final String videoUrl;
   final List likes;
   final User postUser;
@@ -54,59 +51,109 @@ class _FeedState extends State<Feed> {
   late VideoPlayerController _videoPlayerController;
   late ChewieController _chewieController;
 
+  int? bufferDelay;
+
   @override
   void initState() {
     super.initState();
     _videoPlayerController = VideoPlayerController.network(widget.videoUrl);
     _chewieController = ChewieController(
-      videoPlayerController: _videoPlayerController,
-      aspectRatio: _videoPlayerController.value.aspectRatio,
-      looping: true,
-      errorBuilder: (context,errorMessage){
-        return Center(
-          child: CircularProgressIndicator(),
-        );
-      }
-    );
+        videoPlayerController: _videoPlayerController,
+        aspectRatio: _videoPlayerController.value.aspectRatio,
+        allowedScreenSleep: false,
+        allowFullScreen: true,
+        deviceOrientationsAfterFullScreen: [
+          DeviceOrientation.landscapeRight,
+          DeviceOrientation.landscapeLeft,
+          DeviceOrientation.portraitUp,
+          DeviceOrientation.portraitDown,
+        ],
+        autoInitialize: true,
+        autoPlay: true,
+        showControls: true,
+        errorBuilder: (context, errorMessage) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        });
     _videoPlayerController.initialize();
 
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     _chewieController.addListener(() {
-      if(!_chewieController.isFullScreen){
-        SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+      if (_chewieController.isFullScreen) {
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.landscapeRight,
+          DeviceOrientation.landscapeLeft,
+        ]);
+      } else {
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.portraitUp,
+          DeviceOrientation.portraitDown,
+        ]);
       }
     });
-
-
   }
 
   @override
   void dispose() {
     _videoPlayerController.dispose();
+    _chewieController.dispose();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
     final store = Provider.of<UserStore>(context, listen: false);
+    print("---------------------------");
+    print(_videoPlayerController.value.size.height);
+    print("---------------------------");
+
+    double ht = _videoPlayerController.value.size.height;
+
     return Stack(
       children: [
-
-        NetworkPlayerController(videoUrl: widget.videoUrl),
         Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                const Color(0xFF000000).withOpacity(0.6),
-                Colors.transparent,
-                Colors.transparent,
-                const Color(0xFF000000).withOpacity(0.5),
-              ],
-            ),
-          ),
+          color: Colors.black,
+          // decoration: BoxDecoration(
+          //   gradient: LinearGradient(
+          //     begin: Alignment.topCenter,
+          //     end: Alignment.bottomCenter,
+          //     colors: [
+          //       const Color(0xFF000000).withOpacity(0.6),
+          //       Colors.transparent,
+          //       Colors.transparent,
+          //       const Color(0xFF000000).withOpacity(0.5),
+          //     ],
+          //   ),
+          // ),
         ),
+        // Chewie(controller: _chewieController),
+        // VideoProgressIndicator(
+        //   _videoPlayerController,
+        //   allowScrubbing: true,
+        //   colors: VideoProgressColors(
+        //       backgroundColor: Colors.transparent,
+        //       bufferedColor: Colors.black,
+        //       playedColor: Colors.blueAccent),
+        // ),
+        ht > 1900
+            ? SizedBox.expand(
+                child: FittedBox(
+                  fit: BoxFit.cover,
+                  child: SizedBox(
+                    width: _videoPlayerController.value.size.width,
+                    height: _videoPlayerController.value.size.height,
+                    child: NetworkPlayerController(videoUrl: widget.videoUrl),
+                  ),
+                ),
+              )
+            : NetworkPlayerController(videoUrl: widget.videoUrl),
         Align(
           alignment: Alignment.bottomLeft,
           child: Column(
@@ -227,8 +274,10 @@ class _FeedState extends State<Feed> {
                       .bodyMedium
                       ?.merge(const TextStyle(color: AppColors.white)),
                   // overflow: TextOverflow.clip,
-                  style: Theme.of(context).textTheme.bodyText2?.merge(
-                      const TextStyle(color: AppColors.white)),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyText2
+                      ?.merge(const TextStyle(color: AppColors.white)),
                 ),
               ),
             ],
@@ -266,7 +315,7 @@ class _FeedState extends State<Feed> {
                                   ),
                                   onTap: () async {
                                     await Provider.of<UserStore>(context,
-                                        listen: false)
+                                            listen: false)
                                         .changeLiked(widget.postId);
                                   },
                                 ),
@@ -381,9 +430,6 @@ class _FeedState extends State<Feed> {
   }
 }
 
-
-
-
 class MoreOptionSection extends StatelessWidget {
   final String userId;
   final String postId;
@@ -430,9 +476,9 @@ class MoreOptionSection extends StatelessWidget {
                     borderRadius: BorderRadius.circular(1000.0),
                     onTap: () async {
                       if (!await launchUrl(Uri.parse(videoUrl))) {
-                      throw 'Could not launch';
+                        throw 'Could not launch';
                       }
-                       // _launchURL();
+                      // _launchURL();
                     },
                     child: const Padding(
                       padding: EdgeInsets.all(13.0),
