@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 import '../Theme/app_colors.dart';
@@ -188,8 +189,15 @@ class _CommentSectionState extends State<CommentSection> {
                           ),
                           onPressed: () {
                             print(_controller.text);
-                            Provider.of<UserStore>(context, listen: false)
-                                .createComment(widget.postId, _controller.text);
+                            //no empty comments
+                            if (_controller.text == '') {
+                              Fluttertoast.showToast(
+                                  msg: "Please enter some text");
+                            } else {
+                              Provider.of<UserStore>(context, listen: false)
+                                  .createComment(
+                                      widget.postId, _controller.text);
+                            }
                           },
                         ),
                         border: OutlineInputBorder(

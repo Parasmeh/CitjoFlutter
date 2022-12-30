@@ -1,3 +1,4 @@
+import 'package:Citjo/stores/feed_store.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_datastore/amplify_datastore.dart';
@@ -17,8 +18,8 @@ import 'screens/wrapper.dart';
 import 'services/get_it_service.dart';
 import 'services/navigation_service.dart';
 import 'stores/auth.dart';
-import 'stores/feed_store.dart';
-import 'stores/notification_store.dart';
+// import 'stores/feed_store.dart';
+// import 'stores/notification_store.dart';
 import 'stores/userStore.dart';
 
 void main() {
@@ -117,10 +118,10 @@ class _MyAppState extends State<MyApp> {
           create: (_) => FeedStore(),
           lazy: false,
         ),
-        ChangeNotifierProvider<NotificationStore>(
-          create: (_) => NotificationStore(),
-          lazy: false,
-        ),
+        // ChangeNotifierProvider<NotificationStore>(
+        //   create: (_) => NotificationStore(),
+        //   lazy: false,
+        // ),
       ],
       child: MaterialApp(
         theme: Provider.of<ThemeNotifier>(context).getTheme(),

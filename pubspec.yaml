@@ -74,6 +74,7 @@ dependencies:
   open_mail_app: ^0.4.5
   location: ^4.4.0
   translator: ^0.1.7
+  fluttertoast: ^8.1.2
 
 
 

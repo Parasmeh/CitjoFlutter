@@ -5,7 +5,6 @@ import 'dart:io';
 // Amplify Imports
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
-
 // Flutter Imports
 import 'package:uuid/uuid.dart';
 
@@ -30,8 +29,6 @@ class PostRepository {
     metadata['name'] = "user_$uuid";
     metadata['desc'] = 'post video';
     //compress video
-
-
 
     // Prepare to upload Video to s3
     S3UploadFileOptions options = S3UploadFileOptions(
@@ -136,7 +133,7 @@ class PostRepository {
     }
   }
 
-  //creates New Article Post
+  //creates New Article Post - NO USAGES
   Future<bool> createArticlePost(
       {required String desc,
       required String tags,
@@ -179,7 +176,7 @@ class PostRepository {
     }
   }
 
-  // creates New RePost
+  // creates New RePost - NO USAGES
   Future<bool> createRePost({required String desc}) async {
     print("Inside createRePost");
     _loading = true;
@@ -225,7 +222,7 @@ class PostRepository {
     ))[0];
     try {
       await Amplify.DataStore.delete(post);
-      print('Deleted post');
+      print('Post Deleted');
     } on DataStoreException catch (e) {
       print('Delete failed: $e');
     }

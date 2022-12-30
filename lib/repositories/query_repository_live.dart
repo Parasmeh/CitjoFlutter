@@ -1,7 +1,6 @@
 // Dart Imports
-import 'dart:math';
 import 'dart:async';
-
+import 'dart:math';
 
 // Amplify Imports
 import 'package:amplify_flutter/amplify_flutter.dart';
@@ -14,6 +13,7 @@ import '../stores/userStore.dart';
 class QueryRepositoryLive {
   StreamSubscription<QuerySnapshot<Post>>? _postStream;
   StreamSubscription<QuerySnapshot<User>>? _userStream;
+
   bool _isSynced = false;
   List<Post> _posts = [];
   List<User> _users = [];
@@ -50,7 +50,7 @@ class QueryRepositoryLive {
     print("Inside All Subscribed Posts");
     User user = UserStore().currUser;
     _postStream = Amplify.DataStore.observeQuery(Post.classType,
-        sortBy: [Post.CREATEDON.descending()])
+            sortBy: [Post.CREATEDON.descending()])
         .listen((QuerySnapshot<Post> snapshot) {
       _posts = snapshot.items;
       _isSynced = snapshot.isSynced;
@@ -79,7 +79,7 @@ class QueryRepositoryLive {
     for (Post post in _posts) {
       print('Post"s Location: ${post.location}');
       print(user.location);
-      final String location = UserStore().currUser.location!;
+      // final String location = UserStore().currUser.location!;
       double userLat = double.parse(user.location!.split(",")[0]);
       double userLong = double.parse(user.location!.split(",")[1]);
       double postLat = double.parse(post.location!.split(",")[0]);
@@ -90,6 +90,7 @@ class QueryRepositoryLive {
               cos(postLat * 0.017453292519943295) *
               (1 - cos((userLong - postLong) * 0.017453292519943295)) /
               2;
+
       if ((12742 * asin(sqrt(distance))) <= 50) {
         nearbyPosts.add(post);
       }
@@ -98,7 +99,7 @@ class QueryRepositoryLive {
     return nearbyPosts;
   }
 
-  //fetches all the video posts from Amplify DataStore
+  //fetches all the video posts from Amplify DataStore - NO USAGES
   Future<List<Post>> queryAllVideoPosts() async {
     print("Inside query All Posts");
     _postStream = Amplify.DataStore.observeQuery(Post.classType,

@@ -1,10 +1,8 @@
 // Flutter Imports
 import 'dart:async';
 
-
 // Amplify Imports
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 
 import '../models/User.dart';
 import '../models/UserType.dart';
@@ -68,7 +66,9 @@ class UserRepository {
         User.classType,
         where: User.ID.eq(subscribedToId),
       ))[0];
+
       // print('subscribersList Saved');
+
       List<String> subscribersList = [];
       if (subscribedToUser.subscribers != null) {
         subscribersList.addAll(subscribedToUser.subscribers!);
@@ -88,8 +88,10 @@ class UserRepository {
       // print('Suber List Saved');
     }
   }
+
+  // NO USAGES
   void changeUserType(String userId, UserType type) {
     User user = UserStore().currUser;
     Amplify.DataStore.save(user.copyWith(userType: type));
-}
+  }
 }

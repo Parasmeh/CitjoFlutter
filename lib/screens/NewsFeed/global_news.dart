@@ -1,11 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/ModelProvider.dart';
 import '../../models/Post.dart';
-import '../../repositories/query_repository.dart';
-import '../../repositories/user_repository.dart';
 import '../../stores/userStore.dart';
 import '../../widgets/feed.dart';
 
@@ -19,20 +16,17 @@ class GlobalNews extends StatefulWidget {
 }
 
 class _GlobalNewsState extends State<GlobalNews> {
-  final QueryRepository _queryRepo = QueryRepository();
+  // final QueryRepository _queryRepo = QueryRepository();
 
-  final UserRepository _userRepo = UserRepository();
+  // final UserRepository _userRepo = UserRepository();
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-
   }
 
   @override
   Widget build(BuildContext context) {
-    // Provider.of<UserStore>(context, listen: false).queryAllPosts();
     return Stack(
       alignment: Alignment.topCenter,
       children: [
@@ -72,8 +66,9 @@ class _GlobalNewsState extends State<GlobalNews> {
                 itemBuilder: (BuildContext context, int index) {
                   final Post post = posts[index];
                   context.read<UserStore>().fetchPostUser(post.userID);
-                  User postUser = context.watch<UserStore>().postUsers[post.userID]!;
-                  late bool isSubed = false;
+                  User postUser =
+                      context.watch<UserStore>().postUsers[post.userID]!;
+                  // late bool isSubed = false;
 
                   return Feed(
                     videoUrl: posts[index].postVideoUrl!,

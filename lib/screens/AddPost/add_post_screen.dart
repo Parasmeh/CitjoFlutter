@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -683,8 +682,8 @@ class _AddPostPage3State extends State<AddPostPage3> {
                               }),
                         ),
                       );
-                      isPosting = Provider.of<UserStore>(context, listen: false).uploadPost();
-
+                      isPosting = Provider.of<UserStore>(context, listen: false)
+                          .uploadPost();
 
                       // _navigationService.replaceAndNavigateTo(RoutePath.Home);
                     }

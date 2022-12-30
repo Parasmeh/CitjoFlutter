@@ -1,14 +1,9 @@
 // Dart Imports
 import 'dart:async';
 
-// Flutter Imports
-import 'package:flutter/material.dart';
-
-// Model Imports
-
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 // Amplify Imports
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 
 import '../models/User.dart';
 import '../models/UserType.dart';
@@ -48,12 +43,15 @@ class AuthRepository {
   Future<bool> signInWithGoogle() async {
     try {
       print('Inside Signing with Google');
+
       var res =
           await Amplify.Auth.signInWithWebUI(provider: AuthProvider.google);
       print('signInWithWebUI Done');
+
       List<AuthUserAttribute> authUserAttributes =
           await Amplify.Auth.fetchUserAttributes();
       print('--------------fetchUserAttributes-----------------');
+
       var myList = {};
       for (var x in authUserAttributes) {
         myList[x.userAttributeKey.toString()] = x.value.toString();
@@ -69,9 +67,11 @@ class AuthRepository {
       print('username: ' + username);
       final profilePicUrl = myList['picture'];
       print('profilePicUrl: ' + profilePicUrl);
+
       List<User> users = await Amplify.DataStore.query(User.classType,
           where: User.USERCOGID.eq(userId));
       print('DataStore Query Done $users');
+
       if (users.isNotEmpty) {
         print('User: $users');
         return res.isSignedIn;

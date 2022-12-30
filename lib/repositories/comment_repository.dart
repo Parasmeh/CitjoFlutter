@@ -1,8 +1,6 @@
 // Dart Imports
 import 'dart:async';
 
-// Model Imports
-
 // Amplify Imports
 import 'package:amplify_flutter/amplify_flutter.dart';
 
@@ -70,7 +68,7 @@ class CommentsRepository {
     }
   }
 
-  // update Likes of a comment
+  // update Likes of a comment - NO USAGES
   Future updateLikes(String commentId) async {
     print("Inside updateLikes");
     User user = UserStore().currUser;
@@ -99,7 +97,7 @@ class CommentsRepository {
   }
 }
 
-// delete Comment from Amplify DataStore
+// delete Comment from Amplify DataStore - NO USAGES
 Future<void> deleteComment(String commentId) async {
   Comment comment = (await Amplify.DataStore.query(
     Comment.classType,

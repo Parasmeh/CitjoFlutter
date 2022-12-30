@@ -165,50 +165,50 @@ class _FlickMultiPlayerState extends State<FlickMultiPlayer> {
                       color: Colors.blue,
                     ),
                   ),
-                  Selector<UserStore, Map<String, User>>(
-                    selector: (_, UserStore) => UserStore.postUsers,
-                    builder: (_, postUsers, __) {
-                      final User currUser;
-                      if (postUsers[widget.thisPost.userID]! != null) {
-                        currUser = postUsers[widget.thisPost.userID]!;
-                      } else {
-                        currUser = User();
-                      }
-                      final List subed = [];
-                      if (currUser.subscribed != null) {
-                        subed.addAll(currUser.subscribed!);
-                      }
-                      final bool isSubed = subed.contains(widget.postUser.id);
-                      // print(subers);
-                      return MaterialButton(
-                        color: isSubed ? null : AppColors.primary,
-                        height: 32,
-                        minWidth: 32,
-                        // color: AppColors.primary,
-                        shape: RoundedRectangleBorder(
-                          side: const BorderSide(
-                              color: AppColors.primary, width: 0.6),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        onPressed: () {
-                          // await _userRepo.subscribeQuery(postUser.id!);
-                          Provider.of<UserStore>(context, listen: false)
-                              .changeSubed(widget.postUser.id);
-                        },
-
-                        child: Text(
-                          isSubed ? 'Subscribed' : 'Subscribe',
-                          style:
-                              Theme.of(context).textTheme.headlineLarge?.merge(
-                                    TextStyle(
-                                        color: isSubed
-                                            ? AppColors.primary
-                                            : AppColors.white),
-                                  ),
-                        ),
-                      );
-                    },
-                  ),
+                  // Selector<UserStore, Map<String, User>>(
+                  //   selector: (_, UserStore) => UserStore.postUsers,
+                  //   builder: (_, postUsers, __) {
+                  //     final User currUser;
+                  //     if (postUsers[widget.thisPost.userID]! != null) {
+                  //       currUser = postUsers[widget.thisPost.userID]!;
+                  //     } else {
+                  //       currUser = User();
+                  //     }
+                  //     final List subed = [];
+                  //     if (currUser.subscribed != null) {
+                  //       subed.addAll(currUser.subscribed!);
+                  //     }
+                  //     final bool isSubed = subed.contains(widget.postUser.id);
+                  //     // print(subers);
+                  //     return MaterialButton(
+                  //       color: isSubed ? null : AppColors.primary,
+                  //       height: 32,
+                  //       minWidth: 32,
+                  //       // color: AppColors.primary,
+                  //       shape: RoundedRectangleBorder(
+                  //         side: const BorderSide(
+                  //             color: AppColors.primary, width: 0.6),
+                  //         borderRadius: BorderRadius.circular(8),
+                  //       ),
+                  //       onPressed: () {
+                  //         // await _userRepo.subscribeQuery(postUser.id!);
+                  //         Provider.of<UserStore>(context, listen: false)
+                  //             .changeSubed(widget.postUser.id);
+                  //       },
+                  //
+                  //       child: Text(
+                  //         isSubed ? 'Subscribed' : 'Subscribe',
+                  //         style:
+                  //             Theme.of(context).textTheme.headlineLarge?.merge(
+                  //                   TextStyle(
+                  //                       color: isSubed
+                  //                           ? AppColors.primary
+                  //                           : AppColors.white),
+                  //                 ),
+                  //       ),
+                  //     );
+                  //   },
+                  // ),
                 ],
               ),
             ),

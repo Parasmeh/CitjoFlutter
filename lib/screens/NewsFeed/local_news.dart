@@ -18,9 +18,7 @@ class LocalNews extends StatefulWidget {
 class _LocalNewsState extends State<LocalNews> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    Provider.of<UserStore>(context, listen: false).queryLocalPosts();
   }
 
   @override
@@ -65,9 +63,10 @@ class _LocalNewsState extends State<LocalNews> {
                     .fetchPostUser(posts[index].userID);
                 final Post post = posts[index];
                 context.read<UserStore>().fetchPostUser(post.userID);
-                User postUser = context.watch<UserStore>().postUsers[post.userID]!;
+                User postUser =
+                    context.watch<UserStore>().postUsers[post.userID]!;
                 // User postUser = userStore.postUser;
-                late bool isSubed = false;
+                // late bool isSubed = false;
 
                 return Feed(
                   videoUrl: posts[index].postVideoUrl!,
