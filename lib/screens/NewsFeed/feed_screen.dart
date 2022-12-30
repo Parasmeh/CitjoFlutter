@@ -120,24 +120,23 @@ class _FeedScreenState extends State<FeedScreen> {
                       },
                       child: Text(
                         'Subscribed',
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineLarge
-                            ?.merge(TextStyle(
-                              color: Colors.transparent,
-                              shadows: [
-                                Shadow(
-                                    color: (_currentIndex == 0)
-                                        ? AppColors.black
-                                        : AppColors.white,
-                                    offset: Offset(0, -5))
-                              ],
-                              decorationThickness: 4,
-                              decoration: TextDecoration.underline,
-                              decorationColor: (_currentIndex == 0)
-                                  ? AppColors.primary
-                                  : Colors.transparent,
-                            )),
+                        style: Theme.of(context).textTheme.headlineLarge?.merge(
+                              TextStyle(
+                                color: Colors.transparent,
+                                shadows: [
+                                  Shadow(
+                                      color: (_currentIndex == 0)
+                                          ? AppColors.black
+                                          : AppColors.white,
+                                      offset: Offset(0, -5))
+                                ],
+                                decorationThickness: 4,
+                                decoration: TextDecoration.underline,
+                                decorationColor: (_currentIndex == 0)
+                                    ? AppColors.primary
+                                    : Colors.transparent,
+                              ),
+                            ),
                       ),
                     ),
                     TextButton(

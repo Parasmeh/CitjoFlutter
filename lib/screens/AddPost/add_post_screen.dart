@@ -15,6 +15,7 @@ import '../Dashboard.dart';
 import 'location_screen.dart';
 import 'post_category.dart';
 import 'video_preview.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 
 class AddPostScreen extends StatefulWidget {
   static const String id = 'AddPostScreen';
@@ -516,6 +517,7 @@ class _AddPostPage3State extends State<AddPostPage3> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
                               'Category',
@@ -685,6 +687,52 @@ class _AddPostPage3State extends State<AddPostPage3> {
                       isPosting = Provider.of<UserStore>(context, listen: false)
                           .uploadPost();
 
+                      AwesomeDialog(
+                        context: context,
+                        dialogType: DialogType.success,
+                        animType: AnimType.rightSlide,
+                        // title: 'Post Uploaded Successfully',
+                        // desc: 'Dialog description here.............',
+                        body: Column(
+                          children: [
+                            SizedBox(
+                              height: 10,
+                            ),
+                            const Text(
+                              "Post Uploaded Successfully",
+                              style: TextStyle(
+                                fontSize: 18,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            MaterialButton(
+                              height: 42,
+                              minWidth: MediaQuery.of(context).size.width * 0.5,
+                              color: AppColors.primary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text(
+                                'Done',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineLarge
+                                    ?.merge(
+                                      const TextStyle(color: AppColors.white),
+                                    ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                          ],
+                        ),
+                      ).show();
                       // _navigationService.replaceAndNavigateTo(RoutePath.Home);
                     }
                   },

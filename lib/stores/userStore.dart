@@ -162,7 +162,7 @@ class UserStore extends StateKeeper {
 
   Future fetchLiked(String postId) async {
     isLiked[postId.toString()] = await _queryRepository.isLiked(postId);
-    // print('=============================$isLiked===========================');
+    print('=============================$isLiked===========================');
     notifyListeners();
   }
 

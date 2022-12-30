@@ -1,3 +1,4 @@
+import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -48,7 +49,7 @@ class _FeedState extends State<Feed> {
 
   UserRepository _userRepo = UserRepository();
   late VideoPlayerController _videoPlayerController;
-  // late ChewieController _chewieController;
+  late ChewieController _chewieController;
 
   int? bufferDelay;
 
@@ -56,62 +57,62 @@ class _FeedState extends State<Feed> {
   void initState() {
     super.initState();
     _videoPlayerController = VideoPlayerController.network(widget.videoUrl);
-    // _chewieController = ChewieController(
-    //     videoPlayerController: _videoPlayerController,
-    //     aspectRatio: _videoPlayerController.value.aspectRatio,
-    //     allowedScreenSleep: false,
-    //     allowFullScreen: true,
-    //     deviceOrientationsAfterFullScreen: [
-    //       DeviceOrientation.landscapeRight,
-    //       DeviceOrientation.landscapeLeft,
-    //       DeviceOrientation.portraitUp,
-    //       DeviceOrientation.portraitDown,
-    //     ],
-    //     autoInitialize: true,
-    //     autoPlay: true,
-    //     showControls: true,
-    //     errorBuilder: (context, errorMessage) {
-    //       return Center(
-    //         child: CircularProgressIndicator(),
-    //       );
-    //     });
+    _chewieController = ChewieController(
+        videoPlayerController: _videoPlayerController,
+        aspectRatio: _videoPlayerController.value.aspectRatio,
+        allowedScreenSleep: false,
+        allowFullScreen: true,
+        deviceOrientationsAfterFullScreen: [
+          DeviceOrientation.landscapeRight,
+          DeviceOrientation.landscapeLeft,
+          DeviceOrientation.portraitUp,
+          DeviceOrientation.portraitDown,
+        ],
+        autoInitialize: true,
+        autoPlay: true,
+        showControls: true,
+        errorBuilder: (context, errorMessage) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        });
     _videoPlayerController.initialize();
 
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
-    // _chewieController.addListener(() {
-    //   if (_chewieController.isFullScreen) {
-    //     SystemChrome.setPreferredOrientations([
-    //       DeviceOrientation.landscapeRight,
-    //       DeviceOrientation.landscapeLeft,
-    //     ]);
-    //   } else {
-    //     SystemChrome.setPreferredOrientations([
-    //       DeviceOrientation.portraitUp,
-    //       DeviceOrientation.portraitDown,
-    //     ]);
-    //   }
-    // });
+    _chewieController.addListener(() {
+      if (_chewieController.isFullScreen) {
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.landscapeRight,
+          DeviceOrientation.landscapeLeft,
+        ]);
+      } else {
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.portraitUp,
+          DeviceOrientation.portraitDown,
+        ]);
+      }
+    });
   }
 
   @override
   void dispose() {
     _videoPlayerController.dispose();
-    // _chewieController.dispose();
-    // SystemChrome.setPreferredOrientations([
-    //   DeviceOrientation.landscapeRight,
-    //   DeviceOrientation.landscapeLeft,
-    //   DeviceOrientation.portraitUp,
-    //   DeviceOrientation.portraitDown,
-    // ]);
+    _chewieController.dispose();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final store = Provider.of<UserStore>(context, listen: false);
-    // print("---------------------------");
-    // print(_videoPlayerController.value.size.height);
-    // print("---------------------------");
+    print("---------------------------");
+    print(_videoPlayerController.value.size.height);
+    print("---------------------------");
 
     double ht = _videoPlayerController.value.size.height;
 
@@ -132,11 +133,15 @@ class _FeedState extends State<Feed> {
           //   ),
           // ),
         ),
-
-        // 426 - sqaure
-        // 1900+ -> 16:9
-        // 334 -> 9:16
-
+        // Chewie(controller: _chewieController),
+        // VideoProgressIndicator(
+        //   _videoPlayerController,
+        //   allowScrubbing: true,
+        //   colors: VideoProgressColors(
+        //       backgroundColor: Colors.transparent,
+        //       bufferedColor: Colors.black,
+        //       playedColor: Colors.blueAccent),
+        // ),
         ht > 1200
             ? SizedBox.expand(
                 child: FittedBox(
@@ -149,32 +154,6 @@ class _FeedState extends State<Feed> {
                 ),
               )
             : NetworkPlayerController(videoUrl: widget.videoUrl),
-
-        // Center(
-        //   child: FloatingActionButton(
-        //     backgroundColor: Colors.transparent,
-        //     onPressed: () {
-        //       // Wrap the play or pause in a call to `setState`. This ensures the
-        //       // correct icon is shown.
-        //       setState(() {
-        //         // If the video is playing, pause it.
-        //         if (_videoPlayerController.value.isPlaying) {
-        //           _videoPlayerController.pause();
-        //         } else {
-        //           // If the video is paused, play it.
-        //           _videoPlayerController.play();
-        //         }
-        //       });
-        //     },
-        //     // Display the correct icon depending on the state of the player.
-        //     child: Icon(
-        //       _videoPlayerController.value.isPlaying
-        //           ? Icons.pause
-        //           : Icons.play_arrow,
-        //     ),
-        //   ),
-        // ),
-
         Align(
           alignment: Alignment.bottomLeft,
           child: Column(
@@ -311,115 +290,138 @@ class _FeedState extends State<Feed> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Column(
-                    children: [
-                      Selector<UserStore, Map<String, bool>>(
-                          selector: (_, UserStore) => UserStore.isLiked,
-                          builder: (_, isLiked, __) {
-                            final bool isLike;
-                            if (isLiked[widget.postId] != null) {
-                              isLike = isLiked[widget.postId]!;
-                            } else {
-                              isLike = false;
-                            }
-                            return Column(
-                              children: [
-                                GestureDetector(
-                                  child: Icon(
-                                    isLike
-                                        ? Icons.thumb_up_alt
-                                        : Icons.thumb_up_alt_outlined,
-                                    color: Colors.white,
-                                    size: 24,
-                                  ),
-                                  onTap: () async {
-                                    await Provider.of<UserStore>(context,
-                                            listen: false)
-                                        .changeLiked(widget.postId);
-                                  },
-                                ),
-                                Text(
-                                  widget.likes.length.toString(),
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontFamily: 'Open Sans',
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ],
-                            );
-                          }),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Column(
-                    children: [
-                      GestureDetector(
-                        child: const Icon(Icons.mode_comment_outlined,
-                            color: Colors.white, size: 24),
-                        onTap: () async {
-                          await Provider.of<UserStore>(context, listen: false)
-                              .fetchComments(widget.postId);
-                          showModalBottomSheet<void>(
-                            isScrollControlled: true,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            context: context,
-                            builder: (BuildContext context) {
-                              return CommentSection(
-                                postId: widget.postId,
-                              );
-                            },
-                          );
-                        },
-                      ),
-                      Selector<UserStore, List<Comment>>(
-                          selector: (_, UserStore) => UserStore.postComments,
-                          builder: (_, postComments, __) {
-                            // print(postComments.length);
-                            return Text(
-                              postComments.length.toString(),
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: 'Open Sans',
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w600),
-                            );
-                          }),
-                    ],
-                  ),
-                ),
-                Selector<UserStore, Map<String, bool>>(
-                  selector: (_, UserStore) => UserStore.isSaved,
-                  builder: (_, isSaved, __) {
-                    final bool isSave;
-                    if (isSaved[widget.postId] != null) {
-                      isSave = isSaved[widget.postId]!;
-                    } else {
-                      isSave = false;
-                    }
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: GestureDetector(
-                        child: Icon(
-                          isSave ? Icons.bookmark : Icons.bookmark_border,
-                          color: Colors.white,
-                          size: 24,
-                        ),
-                        onTap: () async {
-                          print(widget.post.saves);
-                          await Provider.of<UserStore>(context, listen: false)
-                              .changeSaved(widget.postId);
-                        },
-                      ),
-                    );
-                  },
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(vertical: 8),
+                //   child: Column(
+                //     children: [
+                //       Selector<UserStore, Map<String, bool>>(
+                //           selector: (_, UserStore) => UserStore.isLiked,
+                //           builder: (_, isLiked, __) {
+                //             final bool isLike = widget.post.likes
+                //                     ?.contains(UserStore().currUser.id) ??
+                //                 false;
+                //             // if (isLiked[widget.postId] != null) {
+                //             //   isLike = isLiked[widget.postId]!;
+                //             // } else {
+                //             //   isLike = false;
+                //             // }
+                //             //
+                //
+                //             return Column(
+                //               children: [
+                //                 GestureDetector(
+                //                   child: Icon(
+                //                     isLike
+                //                         ? Icons.thumb_up_alt
+                //                         : Icons.thumb_up_alt_outlined,
+                //                     color: Colors.white,
+                //                     size: 24,
+                //                   ),
+                //                   onTap: () async {
+                //                     await Provider.of<UserStore>(context,
+                //                             listen: false)
+                //                         .changeLiked(widget.postId);
+                //                     Fluttertoast.showToast(
+                //                         msg: "Liked..",
+                //                         toastLength: Toast.LENGTH_SHORT,
+                //                         gravity: ToastGravity.CENTER,
+                //                         timeInSecForIosWeb: 1,
+                //                         backgroundColor: Colors.red,
+                //                         textColor: Colors.white,
+                //                         fontSize: 16.0);
+                //                   },
+                //                 ),
+                //                 Text(
+                //                   widget.likes.length.toString(),
+                //                   style: TextStyle(
+                //                       color: Colors.white,
+                //                       fontFamily: 'Open Sans',
+                //                       fontSize: 10,
+                //                       fontWeight: FontWeight.w600),
+                //                 ),
+                //               ],
+                //             );
+                //           }),
+                //     ],
+                //   ),
+                // ),
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(vertical: 8),
+                //   child: Column(
+                //     children: [
+                //       GestureDetector(
+                //         child: const Icon(Icons.mode_comment_outlined,
+                //             color: Colors.white, size: 24),
+                //         onTap: () async {
+                //           await Provider.of<UserStore>(context, listen: false)
+                //               .fetchComments(widget.postId);
+                //           showModalBottomSheet<void>(
+                //             isScrollControlled: true,
+                //             shape: RoundedRectangleBorder(
+                //               borderRadius: BorderRadius.circular(8),
+                //             ),
+                //             context: context,
+                //             builder: (BuildContext context) {
+                //               return CommentSection(
+                //                 postId: widget.postId,
+                //               );
+                //             },
+                //           );
+                //         },
+                //       ),
+                //       Selector<UserStore, List<Comment>>(
+                //           selector: (_, UserStore) => UserStore.postComments,
+                //           builder: (_, postComments, __) {
+                //             // print(postComments.length);
+                //             return Text(
+                //               postComments.length.toString(),
+                //               style: TextStyle(
+                //                   color: Colors.white,
+                //                   fontFamily: 'Open Sans',
+                //                   fontSize: 10,
+                //                   fontWeight: FontWeight.w600),
+                //             );
+                //           }),
+                //     ],
+                //   ),
+                // ),
+                // Selector<UserStore, Map<String, bool>>(
+                //   selector: (_, UserStore) => UserStore.isSaved,
+                //   builder: (_, isSaved, __) {
+                //     final bool isSave;
+                //     if (isSaved[widget.postId] != null) {
+                //       isSave = isSaved[widget.postId]!;
+                //     } else {
+                //       isSave = false;
+                //     }
+                //
+                //     // widget.post.saves?.contains(UserStore().currUser.id) ??
+                //     //     false;
+                //     return Padding(
+                //       padding: const EdgeInsets.symmetric(vertical: 8),
+                //       child: GestureDetector(
+                //         child: Icon(
+                //           isSave ? Icons.bookmark : Icons.bookmark_border,
+                //           color: Colors.white,
+                //           size: 24,
+                //         ),
+                //         onTap: () async {
+                //           print(widget.post.saves);
+                //           await Provider.of<UserStore>(context, listen: false)
+                //               .changeSaved(widget.postId);
+                //           Fluttertoast.showToast(
+                //               msg: "Bookmarked..",
+                //               toastLength: Toast.LENGTH_SHORT,
+                //               gravity: ToastGravity.CENTER,
+                //               timeInSecForIosWeb: 1,
+                //               backgroundColor: Colors.red,
+                //               textColor: Colors.white,
+                //               fontSize: 16.0);
+                //         },
+                //       ),
+                //     );
+                //   },
+                // ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: GestureDetector(
