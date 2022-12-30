@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -27,7 +26,6 @@ class _GlobalNewsState extends State<GlobalNews> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
   }
 
   @override
@@ -72,7 +70,8 @@ class _GlobalNewsState extends State<GlobalNews> {
                 itemBuilder: (BuildContext context, int index) {
                   final Post post = posts[index];
                   context.read<UserStore>().fetchPostUser(post.userID);
-                  User postUser = context.watch<UserStore>().postUsers[post.userID]!;
+                  User? postUser =
+                      context.watch<UserStore>().postUsers[post.userID]!;
                   late bool isSubed = false;
 
                   return Feed(

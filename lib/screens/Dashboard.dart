@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:location/location.dart';
@@ -67,7 +66,7 @@ class _DashboardState extends State<Dashboard> {
             if (Provider.of<UserStore>(context, listen: false)
                     .currUser
                     .userType ==
-                UserType.PUBLISHER)
+                UserType.USER)
               const AddPostScreen(),
             const NotificationsScreen(),
             const ProfileScreen(),
@@ -108,7 +107,7 @@ class _DashboardState extends State<Dashboard> {
           if (Provider.of<UserStore>(context, listen: false)
                   .currUser
                   .userType ==
-              UserType.PUBLISHER)
+              UserType.USER)
             BottomNavigationBarItem(
               activeIcon: SvgPicture.asset('assets/icons/add-post.svg',
                   color: AppColors.primary),

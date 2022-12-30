@@ -142,7 +142,7 @@ class _FeedState extends State<Feed> {
         //       bufferedColor: Colors.black,
         //       playedColor: Colors.blueAccent),
         // ),
-        ht > 1900
+        ht > 1200
             ? SizedBox.expand(
                 child: FittedBox(
                   fit: BoxFit.cover,
@@ -290,115 +290,138 @@ class _FeedState extends State<Feed> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Column(
-                    children: [
-                      Selector<UserStore, Map<String, bool>>(
-                          selector: (_, UserStore) => UserStore.isLiked,
-                          builder: (_, isLiked, __) {
-                            final bool isLike;
-                            if (isLiked[widget.postId] != null) {
-                              isLike = isLiked[widget.postId]!;
-                            } else {
-                              isLike = false;
-                            }
-                            return Column(
-                              children: [
-                                GestureDetector(
-                                  child: Icon(
-                                    isLike
-                                        ? Icons.thumb_up_alt
-                                        : Icons.thumb_up_alt_outlined,
-                                    color: Colors.white,
-                                    size: 24,
-                                  ),
-                                  onTap: () async {
-                                    await Provider.of<UserStore>(context,
-                                            listen: false)
-                                        .changeLiked(widget.postId);
-                                  },
-                                ),
-                                Text(
-                                  widget.likes.length.toString(),
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontFamily: 'Open Sans',
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ],
-                            );
-                          }),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Column(
-                    children: [
-                      GestureDetector(
-                        child: const Icon(Icons.mode_comment_outlined,
-                            color: Colors.white, size: 24),
-                        onTap: () async {
-                          await Provider.of<UserStore>(context, listen: false)
-                              .fetchComments(widget.postId);
-                          showModalBottomSheet<void>(
-                            isScrollControlled: true,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            context: context,
-                            builder: (BuildContext context) {
-                              return CommentSection(
-                                postId: widget.postId,
-                              );
-                            },
-                          );
-                        },
-                      ),
-                      Selector<UserStore, List<Comment>>(
-                          selector: (_, UserStore) => UserStore.postComments,
-                          builder: (_, postComments, __) {
-                            // print(postComments.length);
-                            return Text(
-                              postComments.length.toString(),
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: 'Open Sans',
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w600),
-                            );
-                          }),
-                    ],
-                  ),
-                ),
-                Selector<UserStore, Map<String, bool>>(
-                  selector: (_, UserStore) => UserStore.isSaved,
-                  builder: (_, isSaved, __) {
-                    final bool isSave;
-                    if (isSaved[widget.postId] != null) {
-                      isSave = isSaved[widget.postId]!;
-                    } else {
-                      isSave = false;
-                    }
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: GestureDetector(
-                        child: Icon(
-                          isSave ? Icons.bookmark : Icons.bookmark_border,
-                          color: Colors.white,
-                          size: 24,
-                        ),
-                        onTap: () async {
-                          print(widget.post.saves);
-                          await Provider.of<UserStore>(context, listen: false)
-                              .changeSaved(widget.postId);
-                        },
-                      ),
-                    );
-                  },
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(vertical: 8),
+                //   child: Column(
+                //     children: [
+                //       Selector<UserStore, Map<String, bool>>(
+                //           selector: (_, UserStore) => UserStore.isLiked,
+                //           builder: (_, isLiked, __) {
+                //             final bool isLike = widget.post.likes
+                //                     ?.contains(UserStore().currUser.id) ??
+                //                 false;
+                //             // if (isLiked[widget.postId] != null) {
+                //             //   isLike = isLiked[widget.postId]!;
+                //             // } else {
+                //             //   isLike = false;
+                //             // }
+                //             //
+                //
+                //             return Column(
+                //               children: [
+                //                 GestureDetector(
+                //                   child: Icon(
+                //                     isLike
+                //                         ? Icons.thumb_up_alt
+                //                         : Icons.thumb_up_alt_outlined,
+                //                     color: Colors.white,
+                //                     size: 24,
+                //                   ),
+                //                   onTap: () async {
+                //                     await Provider.of<UserStore>(context,
+                //                             listen: false)
+                //                         .changeLiked(widget.postId);
+                //                     Fluttertoast.showToast(
+                //                         msg: "Liked..",
+                //                         toastLength: Toast.LENGTH_SHORT,
+                //                         gravity: ToastGravity.CENTER,
+                //                         timeInSecForIosWeb: 1,
+                //                         backgroundColor: Colors.red,
+                //                         textColor: Colors.white,
+                //                         fontSize: 16.0);
+                //                   },
+                //                 ),
+                //                 Text(
+                //                   widget.likes.length.toString(),
+                //                   style: TextStyle(
+                //                       color: Colors.white,
+                //                       fontFamily: 'Open Sans',
+                //                       fontSize: 10,
+                //                       fontWeight: FontWeight.w600),
+                //                 ),
+                //               ],
+                //             );
+                //           }),
+                //     ],
+                //   ),
+                // ),
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(vertical: 8),
+                //   child: Column(
+                //     children: [
+                //       GestureDetector(
+                //         child: const Icon(Icons.mode_comment_outlined,
+                //             color: Colors.white, size: 24),
+                //         onTap: () async {
+                //           await Provider.of<UserStore>(context, listen: false)
+                //               .fetchComments(widget.postId);
+                //           showModalBottomSheet<void>(
+                //             isScrollControlled: true,
+                //             shape: RoundedRectangleBorder(
+                //               borderRadius: BorderRadius.circular(8),
+                //             ),
+                //             context: context,
+                //             builder: (BuildContext context) {
+                //               return CommentSection(
+                //                 postId: widget.postId,
+                //               );
+                //             },
+                //           );
+                //         },
+                //       ),
+                //       Selector<UserStore, List<Comment>>(
+                //           selector: (_, UserStore) => UserStore.postComments,
+                //           builder: (_, postComments, __) {
+                //             // print(postComments.length);
+                //             return Text(
+                //               postComments.length.toString(),
+                //               style: TextStyle(
+                //                   color: Colors.white,
+                //                   fontFamily: 'Open Sans',
+                //                   fontSize: 10,
+                //                   fontWeight: FontWeight.w600),
+                //             );
+                //           }),
+                //     ],
+                //   ),
+                // ),
+                // Selector<UserStore, Map<String, bool>>(
+                //   selector: (_, UserStore) => UserStore.isSaved,
+                //   builder: (_, isSaved, __) {
+                //     final bool isSave;
+                //     if (isSaved[widget.postId] != null) {
+                //       isSave = isSaved[widget.postId]!;
+                //     } else {
+                //       isSave = false;
+                //     }
+                //
+                //     // widget.post.saves?.contains(UserStore().currUser.id) ??
+                //     //     false;
+                //     return Padding(
+                //       padding: const EdgeInsets.symmetric(vertical: 8),
+                //       child: GestureDetector(
+                //         child: Icon(
+                //           isSave ? Icons.bookmark : Icons.bookmark_border,
+                //           color: Colors.white,
+                //           size: 24,
+                //         ),
+                //         onTap: () async {
+                //           print(widget.post.saves);
+                //           await Provider.of<UserStore>(context, listen: false)
+                //               .changeSaved(widget.postId);
+                //           Fluttertoast.showToast(
+                //               msg: "Bookmarked..",
+                //               toastLength: Toast.LENGTH_SHORT,
+                //               gravity: ToastGravity.CENTER,
+                //               timeInSecForIosWeb: 1,
+                //               backgroundColor: Colors.red,
+                //               textColor: Colors.white,
+                //               fontSize: 16.0);
+                //         },
+                //       ),
+                //     );
+                //   },
+                // ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: GestureDetector(

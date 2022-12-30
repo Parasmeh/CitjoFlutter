@@ -98,11 +98,11 @@ class _CommentSectionState extends State<CommentSection> {
                                             picUrl: commentUser.profilePicUrl!,
                                             name: ''),
                                         Padding(
-                                          padding: EdgeInsets.symmetric(
+                                          padding: const EdgeInsets.symmetric(
                                               horizontal: 5),
                                           child: Text(
                                             commentUser.username!,
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               color: Colors.black,
                                               fontFamily: 'Open Sans',
                                               fontWeight: FontWeight.w700,
@@ -128,9 +128,9 @@ class _CommentSectionState extends State<CommentSection> {
                                 padding: EdgeInsets.all(8),
                                 child: Text(
                                   comments[index].commentText!,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontFamily: 'Open Sans',
-                                    fontSize: 12,
+                                    fontSize: 17,
                                     fontWeight: FontWeight.w400,
                                   ),
                                 ),
@@ -190,6 +190,7 @@ class _CommentSectionState extends State<CommentSection> {
                             print(_controller.text);
                             Provider.of<UserStore>(context, listen: false)
                                 .createComment(widget.postId, _controller.text);
+                            _controller.clear();
                           },
                         ),
                         border: OutlineInputBorder(

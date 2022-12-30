@@ -27,9 +27,9 @@ class QueryRepository {
     // print("Post Query Successful");
     List<String> likes = [];
     if (post.likes != null) {
-      // print(post.likes);
+      print(post.likes);
       likes.addAll(post.likes!);
-      // print(post.likes);
+      print(post.likes);
     }
     if (!likes.contains(user.id)) {
       print('Adding..........');
@@ -39,6 +39,7 @@ class QueryRepository {
       likes.remove(user.id);
     }
     await Amplify.DataStore.save(post.copyWith(likes: likes));
+    await UserStore().queryLocalPosts();
   }
 
   // check if post is Liked by the user

@@ -28,11 +28,10 @@ class _LocalNewsState extends State<LocalNews> {
     return Stack(
       alignment: Alignment.topCenter,
       children: [
-        Selector<UserStore, List<Post>>(
-          selector: (_, UserStore) => UserStore.localPosts,
-          builder: (_, localPosts, __) {
+        Consumer<UserStore>(
+          builder: (_, userStore, __) {
             // Consumer<UserStore>(builder: (_, userStore, __) {
-            final List<Post> posts = localPosts;
+            final List<Post> posts = userStore.localPosts;
             print('Local Posts Count: ${posts.length}');
 
             if (posts.length == 0) {
@@ -65,7 +64,8 @@ class _LocalNewsState extends State<LocalNews> {
                     .fetchPostUser(posts[index].userID);
                 final Post post = posts[index];
                 context.read<UserStore>().fetchPostUser(post.userID);
-                User postUser = context.watch<UserStore>().postUsers[post.userID]!;
+                User postUser =
+                    context.watch<UserStore>().postUsers[post.userID]!;
                 // User postUser = userStore.postUser;
                 late bool isSubed = false;
 
