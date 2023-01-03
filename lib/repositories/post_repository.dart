@@ -221,6 +221,11 @@ class PostRepository {
       where: Post.ID.eq(postId),
     ))[0];
     try {
+      User user = UserStore().currUser;
+      Post post = Post(
+          postStatus: PostStatus.DELETED,
+          userID: user.id,
+          updatedOn: TemporalDateTime.now());
       await Amplify.DataStore.delete(post);
       print('Post Deleted');
     } on DataStoreException catch (e) {

@@ -36,6 +36,7 @@ class QueryRepositoryLive {
   Future<List<Post>> queryAllTrendingPosts() async {
     print("Inside query All Trending Posts");
     _postStream = Amplify.DataStore.observeQuery(Post.classType,
+            where: Post.POSTSTATUS.contains("CREATED"),
             sortBy: [Post.LIKES.descending(), Post.CREATEDON.descending()])
         .listen((QuerySnapshot<Post> snapshot) {
       _posts = snapshot.items;
@@ -50,6 +51,7 @@ class QueryRepositoryLive {
     print("Inside All Subscribed Posts");
     User user = UserStore().currUser;
     _postStream = Amplify.DataStore.observeQuery(Post.classType,
+            where: Post.POSTSTATUS.contains("CREATED"),
             sortBy: [Post.CREATEDON.descending()])
         .listen((QuerySnapshot<Post> snapshot) {
       _posts = snapshot.items;
@@ -70,8 +72,10 @@ class QueryRepositoryLive {
   Future<List<Post>> getAllLocationPosts() async {
     print("Inside getAllPosts");
     List<Post> nearbyPosts = [];
-    _postStream = Amplify.DataStore.observeQuery(Post.classType)
-        .listen((QuerySnapshot<Post> snapshot) {
+    _postStream = Amplify.DataStore.observeQuery(
+      Post.classType,
+      where: Post.POSTSTATUS.contains("CREATED"),
+    ).listen((QuerySnapshot<Post> snapshot) {
       _posts = snapshot.items;
       _isSynced = snapshot.isSynced;
     });
