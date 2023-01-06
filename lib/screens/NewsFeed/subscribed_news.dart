@@ -9,6 +9,7 @@ import '../../models/Post.dart';
 import '../../models/User.dart';
 import '../../stores/userStore.dart';
 import 'multi_manager/flick_multi_player.dart';
+import '../shimmer.dart';
 
 class SubscribedNews extends StatefulWidget {
   const SubscribedNews({Key? key}) : super(key: key);
@@ -19,11 +20,22 @@ class SubscribedNews extends StatefulWidget {
 
 class _SubscribedNewsState extends State<SubscribedNews> {
   late FlickMultiManager flickMultiManager = FlickMultiManager();
+  late bool _isLoading = false;
 
   @override
   void initState() {
+    loader();
     super.initState();
     flickMultiManager = FlickMultiManager();
+  }
+
+  void loader() {
+    _isLoading = true;
+    Future.delayed(const Duration(seconds: 3), () {
+      setState(() {
+        _isLoading = false;
+      });
+    });
   }
 
   @override
@@ -112,197 +124,210 @@ class _SubscribedNewsState extends State<SubscribedNews> {
             },
             child: Padding(
               padding: const EdgeInsets.only(top: 32, left: 16, right: 16),
-              child: ListView.builder(
-                itemCount: posts.length,
-                itemBuilder: (context, index) {
-                  final thisPost = posts[index];
-                  Provider.of<UserStore>(context, listen: false)
-                      .fetchPostUser(posts[index].userID);
-                  User postUser = Provider.of<UserStore>(context, listen: false)
-                      .postUsers[posts[index].userID]!;
+              child: _isLoading
+                  ? ListView.separated(
+                      itemCount: 5,
+                      itemBuilder: (context, index) => const NewsCardSkelton(),
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 16.0),
+                    )
+                  : ListView.builder(
+                      itemCount: posts.length,
+                      itemBuilder: (context, index) {
+                        final thisPost = posts[index];
+                        Provider.of<UserStore>(context, listen: false)
+                            .fetchPostUser(posts[index].userID);
+                        User? postUser =
+                            (Provider.of<UserStore>(context, listen: false)
+                                    .postUsers[posts[index].userID] ??
+                                "") as User?;
 
-                  //videoplayer controller
-                  // _videoPlayerController =
-                  //     VideoPlayerController.network(thisPost.postVideoUrl!);
+                        //videoplayer controller
+                        // _videoPlayerController =
+                        //     VideoPlayerController.network(thisPost.postVideoUrl!);
 
-                  return Container(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(5),
-                          child: FlickMultiPlayer(
-                            thisPost: thisPost,
-                            url: thisPost.postVideoUrl!,
-                            flickMultiManager: flickMultiManager,
-                            image: thisPost.postThumbUrl!,
-                            postUser: postUser,
+                        return Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(5),
+                                child: FlickMultiPlayer(
+                                  thisPost: thisPost,
+                                  url: thisPost.postVideoUrl!,
+                                  flickMultiManager: flickMultiManager,
+                                  image: thisPost.postThumbUrl!,
+                                  postUser: postUser!,
+                                ),
+                              ),
+                              // Row(
+                              //   children: [
+                              //     // GestureDetector(
+                              //     //   onTap: () async {
+                              //     //     await Provider.of<UserStore>(context,
+                              //     //             listen: false)
+                              //     //         .changeLiked(thisPost.id);
+                              //     //   },
+                              //     //   child: Row(
+                              //     //     children: [
+                              //     //       SvgPicture.asset('assets/icons/like.svg'),
+                              //     //       SizedBox(
+                              //     //         width: 6,
+                              //     //       ),
+                              //     //       Text(
+                              //     //         '${thisPost.likes!.length}',
+                              //     //         style: Theme.of(context)
+                              //     //             .textTheme
+                              //     //             .bodyText2
+                              //     //             ?.merge(const TextStyle(
+                              //     //                 color: AppColors.black)),
+                              //     //       ),
+                              //     //     ],
+                              //     //   ),
+                              //     // ),
+                              //     Selector<UserStore, Map<String, bool>>(
+                              //         selector: (_, UserStore) => UserStore.isLiked,
+                              //         builder: (_, isLiked, __) {
+                              //           final bool isLike;
+                              //           if (isLiked[thisPost.id] != null) {
+                              //             isLike = isLiked[thisPost.id]!;
+                              //           } else {
+                              //             isLike = false;
+                              //           }
+                              //           return Column(
+                              //             children: [
+                              //               Row(
+                              //                 children: [
+                              //                   GestureDetector(
+                              //                     child: Icon(
+                              //                       isLike
+                              //                           ? Icons.thumb_up_alt
+                              //                           : Icons.thumb_up_alt_outlined,
+                              //                       color: isLike
+                              //                           ? AppColors.primary
+                              //                           : AppColors.greyLight,
+                              //                       size: 24,
+                              //                     ),
+                              //                     onTap: () async {
+                              //                       await Provider.of<UserStore>(
+                              //                               context,
+                              //                               listen: false)
+                              //                           .changeLiked(thisPost.id);
+                              //                     },
+                              //                   ),
+                              //                   SizedBox(width: 6),
+                              //                   Text(
+                              //                     thisPost.likes!.length.toString(),
+                              //                     style: TextStyle(
+                              //                         color: Colors.black,
+                              //                         fontFamily: 'Open Sans',
+                              //                         fontSize: 10,
+                              //                         fontWeight: FontWeight.w600),
+                              //                   ),
+                              //                 ],
+                              //               ),
+                              //             ],
+                              //           );
+                              //         }),
+                              //     Padding(
+                              //       padding:
+                              //           const EdgeInsets.symmetric(horizontal: 28),
+                              //       child: GestureDetector(
+                              //         onTap: () async {
+                              //           await Provider.of<UserStore>(context,
+                              //                   listen: false)
+                              //               .fetchComments(thisPost.id);
+                              //           showModalBottomSheet<void>(
+                              //             isScrollControlled: true,
+                              //             shape: RoundedRectangleBorder(
+                              //               borderRadius: BorderRadius.circular(8),
+                              //             ),
+                              //             context: context,
+                              //             builder: (BuildContext context) {
+                              //               return CommentSection(
+                              //                 postId: thisPost.id,
+                              //               );
+                              //             },
+                              //           );
+                              //         },
+                              //         child: Row(
+                              //           children: [
+                              //             SvgPicture.asset(
+                              //                 'assets/icons/comment.svg'),
+                              //             SizedBox(width: 6),
+                              //             Text(
+                              //               '${thisPost.likes!.length}',
+                              //               style: Theme.of(context)
+                              //                   .textTheme
+                              //                   .bodyText2
+                              //                   ?.merge(const TextStyle(
+                              //                       color: AppColors.black)),
+                              //             ),
+                              //           ],
+                              //         ),
+                              //       ),
+                              //     ),
+                              //     Selector<UserStore, Map<String, bool>>(
+                              //         selector: (_, UserStore) => UserStore.isSaved,
+                              //         builder: (_, isSaved, __) {
+                              //           final bool isSave;
+                              //           if (isSaved[thisPost.id] != null) {
+                              //             isSave = isSaved[thisPost.id]!;
+                              //           } else {
+                              //             isSave = false;
+                              //           }
+                              //           return GestureDetector(
+                              //             onTap: () async {
+                              //               print(thisPost.saves);
+                              //               await Provider.of<UserStore>(context,
+                              //                       listen: false)
+                              //                   .changeSaved(thisPost.id);
+                              //             },
+                              //             child: Icon(
+                              //               isSave
+                              //                   ? Icons.bookmark
+                              //                   : Icons.bookmark_border,
+                              //               color: isSave
+                              //                   ? AppColors.primary
+                              //                   : AppColors.greyLight,
+                              //               size: 24,
+                              //             ),
+                              //           );
+                              //         }),
+                              //   ],
+                              // ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8),
+                                child: ReadMoreText(
+                                  thisPost.desc!,
+                                  // textAlign: TextAlign.start,
+                                  trimLines: 2,
+                                  colorClickableText: AppColors.primary,
+                                  trimMode: TrimMode.Line,
+                                  trimCollapsedText: ' show more',
+                                  trimExpandedText: ' show less',
+                                  moreStyle: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.merge(const TextStyle(
+                                          color: AppColors.primary)),
+                                  // overflow: TextOverflow.clip,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText2
+                                      ?.merge(const TextStyle(
+                                          color: AppColors.black)),
+                                ),
+                              ),
+                              Divider(thickness: 1),
+                            ],
                           ),
-                        ),
-                        // Row(
-                        //   children: [
-                        //     // GestureDetector(
-                        //     //   onTap: () async {
-                        //     //     await Provider.of<UserStore>(context,
-                        //     //             listen: false)
-                        //     //         .changeLiked(thisPost.id);
-                        //     //   },
-                        //     //   child: Row(
-                        //     //     children: [
-                        //     //       SvgPicture.asset('assets/icons/like.svg'),
-                        //     //       SizedBox(
-                        //     //         width: 6,
-                        //     //       ),
-                        //     //       Text(
-                        //     //         '${thisPost.likes!.length}',
-                        //     //         style: Theme.of(context)
-                        //     //             .textTheme
-                        //     //             .bodyText2
-                        //     //             ?.merge(const TextStyle(
-                        //     //                 color: AppColors.black)),
-                        //     //       ),
-                        //     //     ],
-                        //     //   ),
-                        //     // ),
-                        //     Selector<UserStore, Map<String, bool>>(
-                        //         selector: (_, UserStore) => UserStore.isLiked,
-                        //         builder: (_, isLiked, __) {
-                        //           final bool isLike;
-                        //           if (isLiked[thisPost.id] != null) {
-                        //             isLike = isLiked[thisPost.id]!;
-                        //           } else {
-                        //             isLike = false;
-                        //           }
-                        //           return Column(
-                        //             children: [
-                        //               Row(
-                        //                 children: [
-                        //                   GestureDetector(
-                        //                     child: Icon(
-                        //                       isLike
-                        //                           ? Icons.thumb_up_alt
-                        //                           : Icons.thumb_up_alt_outlined,
-                        //                       color: isLike
-                        //                           ? AppColors.primary
-                        //                           : AppColors.greyLight,
-                        //                       size: 24,
-                        //                     ),
-                        //                     onTap: () async {
-                        //                       await Provider.of<UserStore>(
-                        //                               context,
-                        //                               listen: false)
-                        //                           .changeLiked(thisPost.id);
-                        //                     },
-                        //                   ),
-                        //                   SizedBox(width: 6),
-                        //                   Text(
-                        //                     thisPost.likes!.length.toString(),
-                        //                     style: TextStyle(
-                        //                         color: Colors.black,
-                        //                         fontFamily: 'Open Sans',
-                        //                         fontSize: 10,
-                        //                         fontWeight: FontWeight.w600),
-                        //                   ),
-                        //                 ],
-                        //               ),
-                        //             ],
-                        //           );
-                        //         }),
-                        //     Padding(
-                        //       padding:
-                        //           const EdgeInsets.symmetric(horizontal: 28),
-                        //       child: GestureDetector(
-                        //         onTap: () async {
-                        //           await Provider.of<UserStore>(context,
-                        //                   listen: false)
-                        //               .fetchComments(thisPost.id);
-                        //           showModalBottomSheet<void>(
-                        //             isScrollControlled: true,
-                        //             shape: RoundedRectangleBorder(
-                        //               borderRadius: BorderRadius.circular(8),
-                        //             ),
-                        //             context: context,
-                        //             builder: (BuildContext context) {
-                        //               return CommentSection(
-                        //                 postId: thisPost.id,
-                        //               );
-                        //             },
-                        //           );
-                        //         },
-                        //         child: Row(
-                        //           children: [
-                        //             SvgPicture.asset(
-                        //                 'assets/icons/comment.svg'),
-                        //             SizedBox(width: 6),
-                        //             Text(
-                        //               '${thisPost.likes!.length}',
-                        //               style: Theme.of(context)
-                        //                   .textTheme
-                        //                   .bodyText2
-                        //                   ?.merge(const TextStyle(
-                        //                       color: AppColors.black)),
-                        //             ),
-                        //           ],
-                        //         ),
-                        //       ),
-                        //     ),
-                        //     Selector<UserStore, Map<String, bool>>(
-                        //         selector: (_, UserStore) => UserStore.isSaved,
-                        //         builder: (_, isSaved, __) {
-                        //           final bool isSave;
-                        //           if (isSaved[thisPost.id] != null) {
-                        //             isSave = isSaved[thisPost.id]!;
-                        //           } else {
-                        //             isSave = false;
-                        //           }
-                        //           return GestureDetector(
-                        //             onTap: () async {
-                        //               print(thisPost.saves);
-                        //               await Provider.of<UserStore>(context,
-                        //                       listen: false)
-                        //                   .changeSaved(thisPost.id);
-                        //             },
-                        //             child: Icon(
-                        //               isSave
-                        //                   ? Icons.bookmark
-                        //                   : Icons.bookmark_border,
-                        //               color: isSave
-                        //                   ? AppColors.primary
-                        //                   : AppColors.greyLight,
-                        //               size: 24,
-                        //             ),
-                        //           );
-                        //         }),
-                        //   ],
-                        // ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: ReadMoreText(
-                            thisPost.desc!,
-                            // textAlign: TextAlign.start,
-                            trimLines: 2,
-                            colorClickableText: AppColors.primary,
-                            trimMode: TrimMode.Line,
-                            trimCollapsedText: ' show more',
-                            trimExpandedText: ' show less',
-                            moreStyle: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.merge(
-                                    const TextStyle(color: AppColors.primary)),
-                            // overflow: TextOverflow.clip,
-                            style: Theme.of(context).textTheme.bodyText2?.merge(
-                                const TextStyle(color: AppColors.black)),
-                          ),
-                        ),
-                        Divider(thickness: 1),
-                      ],
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
             ),
           );
         });

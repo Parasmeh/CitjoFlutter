@@ -10,6 +10,7 @@ import '../../widgets/categories_drawer.dart';
 import 'global_news.dart';
 import 'local_news.dart';
 import 'subscribed_news.dart';
+import '../shimmer.dart';
 
 class FeedScreen extends StatefulWidget {
   FeedScreen({Key? key}) : super(key: key);
@@ -22,6 +23,7 @@ class _FeedScreenState extends State<FeedScreen> {
   final _queryRepository = QueryRepository();
   int _currentIndex = 0;
   final _pageController = PageController();
+  late bool _isLoading = false;
 
   //Posts Stream Subscription
   /* late StreamSubscription postStream;
@@ -48,8 +50,24 @@ class _FeedScreenState extends State<FeedScreen> {
 
   @override
   void initState() {
+    loader();
     super.initState();
     // getNewsFeed();
+  }
+
+  void loader() {
+    _isLoading = true;
+    Future.delayed(const Duration(seconds: 3), () {
+      setState(() {
+        _isLoading = false;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    // _videoPlayerController.dispose();
+    super.dispose();
   }
 
   @override
@@ -85,120 +103,133 @@ class _FeedScreenState extends State<FeedScreen> {
         child: Categories(),
       ),
       body: SafeArea(
-        child: Stack(
-          children: [
-            PageView(
-              // physics: const NeverScrollableScrollPhysics(),
-              controller: _pageController,
-              onPageChanged: (int page) {
-                setState(() {
-                  _currentIndex = page;
-                });
-              },
-              children: [
-                SubscribedNews(),
-                // SubscribedFullScreen(),
-                LocalNews(),
-                GlobalNews(),
-              ],
-            ),
-            Column(
-              children: [
-                Container(
-                  height: 0.4,
-                  color: AppColors.grey,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        //async
-                        Provider.of<UserStore>(context, listen: false)
-                            .querySubscribedPosts();
-                        _pageController.jumpToPage(0);
-                      },
-                      child: Text(
-                        'Subscribed',
-                        style: Theme.of(context).textTheme.headlineLarge?.merge(
-                              TextStyle(
-                                color: Colors.transparent,
-                                shadows: [
-                                  Shadow(
-                                      color: (_currentIndex == 0)
-                                          ? AppColors.black
-                                          : AppColors.white,
-                                      offset: Offset(0, -5))
-                                ],
-                                decorationThickness: 4,
-                                decoration: TextDecoration.underline,
-                                decorationColor: (_currentIndex == 0)
-                                    ? AppColors.primary
-                                    : Colors.transparent,
-                              ),
-                            ),
+        child: _isLoading
+            ? ListView.separated(
+                itemCount: 5,
+                itemBuilder: (context, index) => const NewsCardSkelton(),
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 16.0),
+              )
+            : Stack(
+                children: [
+                  PageView(
+                    // physics: const NeverScrollableScrollPhysics(),
+                    controller: _pageController,
+                    onPageChanged: (int page) {
+                      setState(() {
+                        _currentIndex = page;
+                      });
+                    },
+                    children: [
+                      SubscribedNews(),
+                      // SubscribedFullScreen(),
+                      LocalNews(),
+                      GlobalNews(),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      Container(
+                        height: 0.4,
+                        color: AppColors.grey,
                       ),
-                    ),
-                    TextButton(
-                        onPressed: () {
-                          Provider.of<UserStore>(context, listen: false)
-                              .queryLocalPosts();
-                          _pageController.jumpToPage(1);
-                        },
-                        child: Text(
-                          'Local',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineLarge
-                              ?.merge(TextStyle(
-                                color: Colors.transparent,
-                                shadows: [
-                                  Shadow(
-                                      color: (_currentIndex == 0)
-                                          ? AppColors.black
-                                          : AppColors.white,
-                                      offset: Offset(0, -5))
-                                ],
-                                decorationThickness: 4,
-                                decoration: TextDecoration.underline,
-                                decorationColor: (_currentIndex == 1)
-                                    ? AppColors.primary
-                                    : Colors.transparent,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              //async
+                              Provider.of<UserStore>(context, listen: false)
+                                  .querySubscribedPosts();
+                              _pageController.jumpToPage(0);
+                            },
+                            child: Text(
+                              'Subscribed',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineLarge
+                                  ?.merge(
+                                    TextStyle(
+                                      color: Colors.transparent,
+                                      shadows: [
+                                        Shadow(
+                                            color: (_currentIndex == 0)
+                                                ? AppColors.black
+                                                : AppColors.white,
+                                            offset: Offset(0, -5))
+                                      ],
+                                      decorationThickness: 4,
+                                      decoration: TextDecoration.underline,
+                                      decorationColor: (_currentIndex == 0)
+                                          ? AppColors.primary
+                                          : Colors.transparent,
+                                    ),
+                                  ),
+                            ),
+                          ),
+                          TextButton(
+                              onPressed: () {
+                                Provider.of<UserStore>(context, listen: false)
+                                    .queryLocalPosts();
+                                _pageController.jumpToPage(1);
+                              },
+                              child: Text(
+                                'Local',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineLarge
+                                    ?.merge(TextStyle(
+                                      color: Colors.transparent,
+                                      shadows: [
+                                        Shadow(
+                                            color: (_currentIndex == 0)
+                                                ? AppColors.black
+                                                : AppColors.white,
+                                            offset: Offset(0, -5))
+                                      ],
+                                      decorationThickness: 4,
+                                      decoration: TextDecoration.underline,
+                                      decorationColor: (_currentIndex == 1)
+                                          ? AppColors.primary
+                                          : Colors.transparent,
+                                    )),
                               )),
-                        )),
-                    TextButton(
-                      onPressed: () {
-                        Provider.of<UserStore>(context, listen: false)
-                            .queryAllPosts();
-                        _pageController.jumpToPage(2);
-                      },
-                      child: Text(
-                        'Trending',
-                        style: Theme.of(context).textTheme.headlineLarge?.merge(
-                              TextStyle(
-                                color: Colors.transparent,
-                                shadows: [
-                                  Shadow(
-                                      color: (_currentIndex == 0)
-                                          ? AppColors.black
-                                          : AppColors.white,
-                                      offset: Offset(0, -5))
-                                ],
-                                decorationThickness: 4,
-                                decoration: TextDecoration.underline,
-                                decorationColor: (_currentIndex == 2)
-                                    ? AppColors.primary
-                                    : Colors.transparent,
-                              ),
+                          TextButton(
+                            onPressed: () {
+                              Provider.of<UserStore>(context, listen: false)
+                                  .queryAllPosts();
+                              _pageController.jumpToPage(2);
+                            },
+                            child: Text(
+                              'Trending',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineLarge
+                                  ?.merge(
+                                    TextStyle(
+                                      color: Colors.transparent,
+                                      shadows: [
+                                        Shadow(
+                                            color: (_currentIndex == 0)
+                                                ? AppColors.black
+                                                : AppColors.white,
+                                            offset: Offset(0, -5))
+                                      ],
+                                      decorationThickness: 4,
+                                      decoration: TextDecoration.underline,
+                                      decorationColor: (_currentIndex == 2)
+                                          ? AppColors.primary
+                                          : Colors.transparent,
+                                    ),
+                                  ),
                             ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ),
+                    ],
+                  ),
+                ],
+              ),
       ),
     );
   }

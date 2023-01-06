@@ -5,6 +5,7 @@ import '../../models/ModelProvider.dart';
 import '../../models/Post.dart';
 import '../../stores/userStore.dart';
 import '../../widgets/feed.dart';
+import '../shimmer.dart';
 
 class GlobalNews extends StatefulWidget {
   GlobalNews({
@@ -16,13 +17,30 @@ class GlobalNews extends StatefulWidget {
 }
 
 class _GlobalNewsState extends State<GlobalNews> {
+  late bool _isLoading = false;
   // final QueryRepository _queryRepo = QueryRepository();
 
   // final UserRepository _userRepo = UserRepository();
 
   @override
   void initState() {
+    loader();
     super.initState();
+  }
+
+  void loader() {
+    _isLoading = true;
+    Future.delayed(const Duration(seconds: 3), () {
+      setState(() {
+        _isLoading = false;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    // _videoPlayerController.dispose();
+    super.dispose();
   }
 
   @override
@@ -60,26 +78,33 @@ class _GlobalNewsState extends State<GlobalNews> {
                 );
               }
 
-              return PageView.builder(
-                itemCount: posts.length,
-                scrollDirection: Axis.vertical,
-                itemBuilder: (BuildContext context, int index) {
-                  final Post post = posts[index];
-                  context.read<UserStore>().fetchPostUser(post.userID);
-                  User postUser =
-                      context.watch<UserStore>().postUsers[post.userID]!;
-                  // late bool isSubed = false;
+              return _isLoading
+                  ? ListView.separated(
+                      itemCount: 5,
+                      itemBuilder: (context, index) => const NewsCardSkelton(),
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 16.0),
+                    )
+                  : PageView.builder(
+                      itemCount: posts.length,
+                      scrollDirection: Axis.vertical,
+                      itemBuilder: (BuildContext context, int index) {
+                        final Post post = posts[index];
+                        context.read<UserStore>().fetchPostUser(post.userID);
+                        User postUser =
+                            context.watch<UserStore>().postUsers[post.userID]!;
+                        // late bool isSubed = false;
 
-                  return Feed(
-                    videoUrl: posts[index].postVideoUrl!,
-                    desc: posts[index].desc!,
-                    likes: posts[index].likes!,
-                    postUser: postUser,
-                    postId: posts[index].id,
-                    post: posts[index],
-                  );
-                },
-              );
+                        return Feed(
+                          videoUrl: posts[index].postVideoUrl!,
+                          desc: posts[index].desc!,
+                          likes: posts[index].likes!,
+                          postUser: postUser,
+                          postId: posts[index].id,
+                          post: posts[index],
+                        );
+                      },
+                    );
             }),
       ],
     );
