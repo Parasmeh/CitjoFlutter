@@ -1,6 +1,0 @@
-version: "Apple Swift version 5.7.1 (swiftlang-5.7.1.135.3 clang-1400.0.29.51)"
-options: "a4f01662ea873f555c5f41792c5e913c6f51d31c67758222f1e1ead8046b31d8"
-build_start_time: [1668708808, 171283960]
-build_end_time: [1668708814, 365148067]
-inputs:
-  "/Users/prerak/.pub-cache/hosted/pub.dev/path_provider_macos-2.0.6/macos/Classes/PathProviderPlugin.swift": [1668443159, 67265748]

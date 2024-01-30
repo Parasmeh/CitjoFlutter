@@ -1,6 +1,0 @@
-version: "Apple Swift version 5.7.1 (swiftlang-5.7.1.135.3 clang-1400.0.29.51)"
-options: "a3573f42be559256e9041ff6a2c85aff0ea8846df243a8b599fa3d33a9c8e4a5"
-build_start_time: [1668708807, 697803020]
-build_end_time: [1668708814, 359223842]
-inputs:
-  "/Users/prerak/.pub-cache/hosted/pub.dev/wakelock_macos-0.4.0/macos/Classes/WakelockMacosPlugin.swift": [1668443156, 387746810]

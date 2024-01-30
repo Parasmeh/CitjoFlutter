@@ -1,8 +1,0 @@
-version: "Apple Swift version 5.7.1 (swiftlang-5.7.1.135.3 clang-1400.0.29.51)"
-options: "0c0dd0d52b5c1f93e01c05671506bdef8e91eaa8341783cec417d8ef8e504bae"
-build_start_time: [1668708839, 57784080]
-build_end_time: [1668708848, 20420074]
-inputs:
-  "/Users/prerak/Prerak/Flutter/citjo_app/macos/Flutter/GeneratedPluginRegistrant.swift": [1668708798, 407755136]
-  "/Users/prerak/Prerak/Flutter/citjo_app/macos/Runner/AppDelegate.swift": [1638510996, 948216438]
-  "/Users/prerak/Prerak/Flutter/citjo_app/macos/Runner/MainFlutterWindow.swift": [1638510996, 949732780]
