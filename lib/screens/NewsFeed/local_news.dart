@@ -35,12 +35,6 @@ class _LocalNewsState extends State<LocalNews> {
   }
 
   @override
-  void dispose() {
-    // _videoPlayerController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Stack(
       alignment: Alignment.topCenter,
